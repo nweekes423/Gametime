@@ -1,0 +1,19 @@
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Subscribe</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
