@@ -23,13 +23,16 @@ pipeline {
 }
 
         stage('Run Tests') {
-            steps {
-                script {
-                    sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test'
-
-                }
+    steps {
+        script {
+            // Change into the project directory
+            dir('nba_notifier') {
+                // Run the tests
+                sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test'
             }
         }
+    }
+}
 
         stage('Deploy') {
             steps {
