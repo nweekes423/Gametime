@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        VENV = '/Users/will/Gametime/nba_notifier/venv'  // Change this to the appropriate virtual environment path
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,19 +8,11 @@ pipeline {
             }
         }
 
-        stage('Activate Virtual Environment') {
-            steps {
-                script {
-                    // Activate the virtual environment
-                    sh "source ${VENV}/bin/activate"
-                }
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'pip install -r requirements.txt'
+                    // Activate the virtual environment and install dependencies
+                    sh 'source venv/bin/activate && pip install -r requirements.txt'
                 }
             }
         }
@@ -46,8 +34,8 @@ pipeline {
                         validateGithubSecret(GITHUB_SECRET)
                         
                         // Additional deployment steps
-                        sh "${VENV}/bin/python manage.py collectstatic --noinput"
-                        sh "${VENV}/bin/python manage.py migrate"
+                        sh 'venv/bin/python manage.py collectstatic --noinput'
+                        sh 'venv/bin/python manage.py migrate'
                         // Additional deployment steps can be added as needed
                     }
                 }
@@ -55,4 +43,3 @@ pipeline {
         }
     }
 }
-
