@@ -12,6 +12,15 @@ pipeline {
             }
         }
 
+        stage('Activate Virtual Environment') {
+            steps {
+                script {
+                    // Activate the virtual environment
+                    sh "source ${VENV}/bin/activate"
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 script {
