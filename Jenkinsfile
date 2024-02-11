@@ -42,8 +42,8 @@ pipeline {
                     dir('/Users/will/Gametime/nba_notifier') {
                         // Use 'withCredentials' to securely access the GitHub secret
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
-                            // Validate the GitHub secret in the payload
-                            validateGithubSecret(GITHUB_SECRET)
+                            // Example: Print the GitHub secret
+                            sh 'echo $GITHUB_SECRET'
                             
                             // Additional deployment steps
                             sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
@@ -53,13 +53,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'This will always run'
-            // Add cleanup or finalization steps here
         }
     }
 }
