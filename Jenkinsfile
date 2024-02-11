@@ -55,4 +55,12 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            echo 'This will always run'
+            // Add cleanup or finalization steps here
+        }
+    }
 }
+
