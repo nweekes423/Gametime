@@ -11,8 +11,11 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Activate the virtual environment and install dependencies
-                    sh 'source venv/bin/activate && pip install -r requirements.txt'
+                    // Activate the virtual environment
+                    sh '/Users/will/Gametime/nba_notifier/venv/bin/activate'
+
+                    // Use the full path to pip within the virtual environment
+                    sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install -r requirements.txt'
                 }
             }
         }
@@ -34,8 +37,8 @@ pipeline {
                         validateGithubSecret(GITHUB_SECRET)
                         
                         // Additional deployment steps
-                        sh 'venv/bin/python manage.py collectstatic --noinput'
-                        sh 'venv/bin/python manage.py migrate'
+                        sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
+                        sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py migrate'
                         // Additional deployment steps can be added as needed
                     }
                 }
