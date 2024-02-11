@@ -23,7 +23,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh 'python manage.py test'
+                    sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test'
+
                 }
             }
         }
