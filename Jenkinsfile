@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        VENV = '/Users/will/Gametime/nba_notifier/venv'  // Change this to the appropriate virtual environment path
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -27,8 +31,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Add deployment steps here
-                    // e.g., collectstatic, migrate, etc.
+                    // Use 'withCredentials' to securely access the GitHub secret
+                    withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
+                        // Validate the GitHub secret in the payload
+                        validateGithubSecret(GITHUB_SECRET)
+                        
+                        // Additional deployment steps
+                        sh "${VENV}/bin/python manage.py collectstatic --noinput"
+                        sh "${VENV}/bin/python manage.py migrate"
+                        // Additional deployment steps can be added as needed
+                    }
                 }
             }
         }
