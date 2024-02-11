@@ -2187,3 +2187,16 @@
 {"levelname": "INFO", "name": "django.utils.autoreload", "message": "/Users/will/Gametime/nba_notifier/game_monitor/views.py changed, reloading.", "asctime": "2024-02-09 02:39:10,994"}
 {"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-09 02:39:12,568"}
 {"levelname": "INFO", "name": "django", "message": "LOOK This is a test log message", "asctime": "2024-02-09 02:56:01,823"}
+{"levelname": "INFO", "name": "django", "message": "LOOK This is a test log message", "asctime": "2024-02-11 03:14:49,622"}
+{"levelname": "INFO", "name": "django", "message": "LOOK This is a test log message", "asctime": "2024-02-11 16:12:01,897"}
+{"levelname": "INFO", "name": "django", "message": "LOOK This is a test log message", "asctime": "2024-02-11 16:21:11,369"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-11 16:44:44,534"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-11 16:47:36,213"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-11 16:48:14,071"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-11 16:50:16,692"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-02-11 16:50:58,750"}
+{"levelname": "INFO", "name": "django.server", "message": "\"GET / HTTP/1.1\" 200 432", "asctime": "2024-02-11 16:51:08,450", "request": "<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 65433)>", "server_time": "11/Feb/2024 16:51:08", "status_code": 200}
+{"levelname": "WARNING", "name": "django.request", "message": "Not Found: /favicon.ico", "asctime": "2024-02-11 16:51:08,825", "status_code": 404, "request": "<WSGIRequest: GET '/favicon.ico'>"}
+{"levelname": "WARNING", "name": "django.server", "message": "\"GET /favicon.ico HTTP/1.1\" 404 2342", "asctime": "2024-02-11 16:51:08,826", "request": "<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 65433)>", "server_time": "11/Feb/2024 16:51:08", "status_code": 404}
+{"levelname": "INFO", "name": "django.server", "message": "\"GET /game-monitor/phone-form/ HTTP/1.1\" 200 510", "asctime": "2024-02-11 16:51:10,278", "request": "<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 65433)>", "server_time": "11/Feb/2024 16:51:10", "status_code": 200}
+{"levelname": "INFO", "name": "django", "message": "LOOK This is a test log message", "asctime": "2024-02-11 16:56:21,738"}

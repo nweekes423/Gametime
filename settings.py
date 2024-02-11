@@ -17,7 +17,9 @@ from celery import Celery
 from dotenv import load_dotenv
 
 
+
 BASE_DIR = Path(__file__).resolve().parent
+
 
 load_dotenv()
 
@@ -29,6 +31,12 @@ TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
 
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
+
+
+
+
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CELERY_RESULT_BACKEND = (
     "redis://localhost:6379/0"  # Use the same Redis instance as your broker
@@ -52,9 +60,9 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = Path(__file__).resolve().parent
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -187,7 +195,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
