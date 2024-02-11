@@ -8,17 +8,19 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Activate the virtual environment
-                    sh '/Users/will/Gametime/nba_notifier/venv/bin/activate'
+ stage('Install Dependencies') {
+    steps {
+        script {
+            catchError {
+                // Activate the virtual environment
+                sh 'source /Users/will/Gametime/nba_notifier/venv/bin/activate'
 
-                    // Use the full path to pip within the virtual environment
-                    sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install -r requirements.txt'
-                }
+                // Use the full path to pip within the virtual environment
+                sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install -r requirements.txt'
             }
         }
+    }
+}
 
         stage('Run Tests') {
             steps {
