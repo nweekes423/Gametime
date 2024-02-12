@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            choices: ['dev', 'prod'],
+            description: 'Select the environment',
+            name: 'ENVIRONMENT'
+        )
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -44,11 +52,15 @@ pipeline {
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
                             // Example: Print the GitHub secret
                             sh 'echo $GITHUB_SECRET'
-                            
-                            // Additional deployment steps
-                            sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
-                            sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py migrate'
-                            // Additional deployment steps can be added as needed
+
+                            // Conditional deployment steps based on the environment
+                            if (params.ENVIRONMENT == 'prod') {
+                                sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
+                                sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py migrate'
+                                // Additional production deployment steps can be added as needed
+                            } else {
+                                echo "Skipping production deployment steps for a non-production environment."
+                            }
                         }
                     }
                 }
@@ -56,4 +68,3 @@ pipeline {
         }
     }
 }
-
