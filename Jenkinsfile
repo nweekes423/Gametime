@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         choice(
-            choices: ['dev', 'prod'],
+            choices: ['dev', 'main'],
             description: 'Select the environment',
             name: 'ENVIRONMENT'
         )
@@ -54,7 +54,7 @@ pipeline {
                             sh 'echo $GITHUB_SECRET'
 
                             // Conditional deployment steps based on the environment
-                            if (params.ENVIRONMENT == 'prod') {
+                            if (params.ENVIRONMENT == 'main') {
                                 sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
                                 sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py migrate'
                                 // Additional production deployment steps can be added as needed
