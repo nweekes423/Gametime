@@ -1,9 +1,26 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
+
 
 # Create your models here.
 
+class Game(models.Model):
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField(default=timezone.now)
+
+    home_team = models.CharField(max_length=255)
+    away_team = models.CharField(max_length=255)
+    home_team_score = models.IntegerField(null=True, blank=True)
+    away_team_score = models.IntegerField(null=True, blank=True)
+    game_clock = models.CharField(max_length=10)
+    #period = models.IntegerField()
+    period = models.IntegerField(null=True, blank=True)
+
+
+    def __str__(self):
+        return self.title
 
 class UserPhone(models.Model):
     phone_regex = RegexValidator(

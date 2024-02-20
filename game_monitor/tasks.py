@@ -76,6 +76,7 @@ def update_nba_scores(self):
 
 @shared_task
 def frequent_game_score_checks():
+    print("Running frequent_game_score_checks task")
     if is_time_to_check_scores():
         try:
             fetch_and_update_scoreboard()

@@ -3,6 +3,7 @@ from datetime import datetime
 import pytz
 from django.conf import settings
 from twilio.rest import Client
+import re
 
 
 def send_text_message(to_number, body):
@@ -13,14 +14,14 @@ def send_text_message(to_number, body):
     print(message.sid)
 
 
-def is_time_to_check_scores():
-    now_pacific = datetime.now(pytz.timezone("America/Los_Angeles"))
-    start_time = now_pacific.replace(hour=16, minute=30, second=0, microsecond=0)
-    end_time = now_pacific.replace(
-        hour=23, minute=59, second=59, microsecond=0
-    )  # Example end time
+def is_time_to_check_scores(current_time=None):
+    if current_time is None:
+        current_time = datetime.now(pytz.timezone("America/Los_Angeles"))
 
-    return start_time <= now_pacific <= end_time
+    start_time = current_time.replace(hour=18, minute=0, second=0, microsecond=0)
+    end_time = current_time.replace(hour=20, minute=0, second=0, microsecond=0)
+
+    return start_time <= current_time <= end_time
 
 
 def parse_duration(duration_str):
