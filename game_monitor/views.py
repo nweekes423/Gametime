@@ -8,17 +8,38 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from nba_api.live.nba.endpoints import scoreboard
 
-from .forms import PhoneForm
+from game_monitor.forms import PhoneForm
 from .models import UserPhone
 from .utils import send_text_message
+
 
 # In game_monitor/views.py
 
 from django.shortcuts import render
 
+def games_view(request):
+    try:
+        games = scoreboard.ScoreBoard()
+        data = games.get_dict()
+
+        game_info = [
+        {
+            "home_team": game["homeTeam"]["teamName"],
+            "away_team": game["awayTeam"]["teamName"],
+            "score": f"{game['homeTeam']['score']} - {game['awayTeam']['score']}",
+            "time_left": game["gameClock"],
+        }
+        for game in data["scoreboard"]["games"]
+        ]
+        return render(request, 'game_template.html', {'games_info': game_info})
+    except Exception as e:
+        print(f"Error fetching games: {e}")
+        return render(request, 'error_template.html', {'error_message': 'No games available'})
 
 def root_view(request):
     return render(request, "root.html")
+
+
 
 
 def phone_view(request):
@@ -33,27 +54,27 @@ def phone_view(request):
                 print("New phone number registered.")
                 messages.success(
                     request, "New phone number registered."
-                )  # Added success message
-                return redirect("success-page")
+                )
             else:
                 print("Phone number already exists.")
                 messages.warning(
                     request, "Phone number already exists!"
-                )  # Added warning message
-                # Redirecting back to the form with the message instead of rendering it directly
-                # This is to prevent displaying the form submission result on a new URL
-                return redirect("phone-form")
+                )
+            return redirect("success-page")
         else:
-            print("Form is not valid")
-            # If the form is not valid, you might also want to show a generic error message
+            print("[+] Form is not valid")
             messages.error(
                 request, "There was an error with your submission."
-            )  # Added error message
+            )
+            print(form.errors)  # Add this line for debugging
+            return render(request, "phone-form.html", {"form": form})
     else:
         form = PhoneForm()
 
-    # Render the form for GET requests or if there's an issue with the form submission
     return render(request, "phone-form.html", {"form": form})
+
+
+
 
 
 def success_view(request):

@@ -10,7 +10,7 @@ class TestSMSSending(unittest.TestCase):
     @patch("game_monitor.utils.Client")
     def test_send_text_message(self, mock_client):
         # Mock data
-        to_number = "+15105194907"
+        to_number = "+15105374865"
         body = "Test Message 1/31 5:40PM"
 
         # Call the function

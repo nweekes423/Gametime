@@ -94,7 +94,17 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/django.log",
+            #"filename": "logs/django.log",
+            "filename": os.path.join(BASE_DIR, "logs/django.log"),
+
+            "formatter": "json",
+            "maxBytes": 1024 * 1024 * 5,  # 5 MB
+            "backupCount": 5,
+        },
+        "celery_file": {  # New Celery file handler
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/celery.log"),
             "formatter": "json",
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
             "backupCount": 5,
@@ -138,7 +148,7 @@ ROOT_URLCONF = "nba_notifier.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "game_monitor", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -150,6 +160,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = "nba_notifier.wsgi.application"
 
