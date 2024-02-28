@@ -33,19 +33,6 @@ TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
 
 
-#test comment
-
-# Specify the relative path to your tests directory
-TESTS_DIR = BASE_DIR / 'game_monitor' / 'tests'
-
-# Specify the Python module path for your tests
-DJANGO_TEST_MODULES = ['game_monitor.tests']
-
-
-
-
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 CELERY_RESULT_BACKEND = (
     "redis://localhost:6379/0"  # Use the same Redis instance as your broker
 )
