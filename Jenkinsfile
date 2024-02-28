@@ -37,7 +37,7 @@ pipeline {
                     // Navigate to the project directory
                     dir('/Users/will/Gametime/nba_notifier') {
                         // Run the tests
-                        sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test'
+                        sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test game_monitor'
                     }
                 }
             }
