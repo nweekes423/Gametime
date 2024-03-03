@@ -68,7 +68,7 @@ STATIC_URL = '/static/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 LOGGING = {
@@ -126,6 +126,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "game_monitor.apps.GameMonitorConfig",  # Include your app using AppConfig
     "django_celery_beat",
+    "nba_notifier",
 ]
 
 MIDDLEWARE = [
