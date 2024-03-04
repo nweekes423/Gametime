@@ -16,13 +16,34 @@ from celery.schedules import crontab
 from celery import Celery
 from dotenv import load_dotenv
 
-
-
 BASE_DIR = Path(__file__).resolve().parent
-
 
 load_dotenv()
 
+# Running 'python manage.py check --deploy' identifies security issues in the Django project.
+# Below are recommendations to resolve some of the identified issues.
+
+# Set the HSTS (HTTP Strict Transport Security) header duration to 1 year (in seconds).
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+
+# Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
+SECURE_SSL_REDIRECT = False
+
+# Use a secure-only session cookie, making it more resistant to session hijacking.
+SESSION_COOKIE_SECURE = True
+
+# Use a secure-only CSRF (Cross-Site Request Forgery) cookie, enhancing security against CSRF attacks.
+CSRF_COOKIE_SECURE = True
+
+# Enable HSTS (HTTP Strict Transport Security) header to include subdomains.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Enable HSTS preload, which adds the domain to the HSTS preload list.
+SECURE_HSTS_PRELOAD = True
+
+# Enable using X-Forwarded-Proto header to determine request security.
+# Set to True to make the development server treat requests as HTTPS.
+USE_X_FORWARDED_PROTO = True
 
 # Use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
@@ -30,13 +51,9 @@ TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "default-sid")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
 
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
-
-
 CELERY_RESULT_BACKEND = (
     "redis://localhost:6379/0"  # Use the same Redis instance as your broker
 )
-
 
 # Checks scores every 5 minutes, adjust as needed. See if can check at cert
 CELERY_BEAT_SCHEDULE = {
@@ -54,11 +71,8 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -66,10 +80,10 @@ STATIC_URL = '/static/'
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['0.0.0.0']
-
+# Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
 
 LOGGING = {
     "version": 1,
@@ -89,9 +103,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
-            #"filename": "logs/django.log",
             "filename": os.path.join(BASE_DIR, "logs/django.log"),
-
             "formatter": "json",
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
             "backupCount": 5,
@@ -114,7 +126,6 @@ LOGGING = {
     },
 }
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -134,9 +145,9 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "nba_notifier.urls"
@@ -152,11 +163,11 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.csrf",  # Added for CSRF token
             ],
         },
     },
 ]
-
 
 WSGI_APPLICATION = "nba_notifier.wsgi.application"
 
@@ -201,8 +212,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
