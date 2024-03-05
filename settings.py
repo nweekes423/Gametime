@@ -27,7 +27,8 @@ load_dotenv()
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 
 # Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
-SECURE_SSL_REDIRECT = False
+#Set to False for non ssl
+SECURE_SSL_REDIRECT = True
 
 # Use a secure-only session cookie, making it more resistant to session hijacking.
 SESSION_COOKIE_SECURE = True
@@ -41,9 +42,24 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # Enable HSTS preload, which adds the domain to the HSTS preload list.
 SECURE_HSTS_PRELOAD = True
 
+# Enable the browser's Cross-Site Scripting (XSS) filter for added security.
+SECURE_BROWSER_XSS_FILTER = True
+
 # Enable using X-Forwarded-Proto header to determine request security.
 # Set to True to make the development server treat requests as HTTPS.
 USE_X_FORWARDED_PROTO = True
+
+
+# Content Security Policy (CSP) header configuration to define a policy
+# for controlling the types of resources that a user agent is allowed to load
+# for a given page. CSP enhances security by preventing or mitigating
+# various types of attacks, such as Cross-Site Scripting (XSS) and data injection.
+CSP_HEADER = {
+    'default-src': ["'self'"],
+    'style-src': ["'self'", 'maxcdn.bootstrapcdn.com'],
+    'script-src': ["'self'", 'code.jquery.com'],
+
+}
 
 # Use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
@@ -84,6 +100,9 @@ DEBUG = False
 
 # Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+
+SSL_CERTIFICATE_PATH = 'ssl/localhost.crt'
+SSL_KEY_PATH = 'ssl/localhost.key'
 
 LOGGING = {
     "version": 1,
@@ -130,6 +149,8 @@ LOGGING = {
 
 INSTALLED_APPS = [
     "django.contrib.admin",
+    "django_extensions",
+    'sslserver',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
