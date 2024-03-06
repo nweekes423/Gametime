@@ -267,3 +267,5 @@
 {"levelname": "WARNING", "name": "django.request", "message": "Not Found: /favicon.ico", "asctime": "2024-03-05 19:12:38,790", "status_code": 404, "request": "<WSGIRequest: GET '/favicon.ico'>"}
 {"levelname": "WARNING", "name": "django.request", "message": "Not Found: /favicon.ico", "asctime": "2024-03-05 23:29:05,749", "status_code": 404, "request": "<WSGIRequest: GET '/favicon.ico'>"}
 {"levelname": "WARNING", "name": "django.request", "message": "Not Found: /favicon.ico", "asctime": "2024-03-05 23:33:34,673", "status_code": 404, "request": "<WSGIRequest: GET '/favicon.ico'>"}
+{"levelname": "WARNING", "name": "django.request", "message": "Not Found: /favicon.ico", "asctime": "2024-03-06 01:00:24,083", "status_code": 404, "request": "<WSGIRequest: GET '/favicon.ico'>"}
+{"levelname": "INFO", "name": "django.utils.autoreload", "message": "Watching for file changes with StatReloader", "asctime": "2024-03-06 02:42:52,211"}

@@ -49,6 +49,8 @@ SECURE_BROWSER_XSS_FILTER = True
 # Set to True to make the development server treat requests as HTTPS.
 USE_X_FORWARDED_PROTO = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Content Security Policy (CSP) header configuration to define a policy
 # for controlling the types of resources that a user agent is allowed to load
@@ -99,10 +101,11 @@ STATIC_URL = '/static/'
 DEBUG = False
 
 # Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]', 'localhost:8001']
 
 SSL_CERTIFICATE_PATH = 'ssl/localhost.crt'
 SSL_KEY_PATH = 'ssl/localhost.key'
+
 
 LOGGING = {
     "version": 1,
