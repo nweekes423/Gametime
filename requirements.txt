@@ -20,6 +20,8 @@ cron-descriptor==1.4.3
 dill==0.3.8
 Django>=3.2,<5.0
 django-celery-beat==2.5.0
+django-extensions
+django-sslserver
 django-timezone-field==6.1.0
 django-phonenumbers
 django-phonenumber-field
@@ -42,6 +44,7 @@ pylint==3.0.3
 python-crontab==3.0.0
 python-dateutil==2.8.2
 python-dotenv==1.0.1
+pyOpenSSL
 python-json-logger @ git+https://github.com/madzak/python-json-logger.git@5f85723f4693c7289724fdcda84cfc0b62da74d4
 pytz==2024.1
 redis==5.0.1
@@ -56,5 +59,6 @@ tzdata==2023.4
 urllib3==2.2.0
 vine==5.1.0
 wcwidth==0.2.13
+Werkzeug
 yarl==1.9.4
 zipp==3.17.0
