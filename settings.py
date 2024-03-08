@@ -28,28 +28,21 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 
 # Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
 #Set to False for non ssl
-SECURE_SSL_REDIRECT = True
+#Set to False for non-SSL
+SECURE_SSL_REDIRECT = False
 
 # Use a secure-only session cookie, making it more resistant to session hijacking.
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
 
 # Use a secure-only CSRF (Cross-Site Request Forgery) cookie, enhancing security against CSRF attacks.
-CSRF_COOKIE_SECURE = True
-
-# Enable HSTS (HTTP Strict Transport Security) header to include subdomains.
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-# Enable HSTS preload, which adds the domain to the HSTS preload list.
-SECURE_HSTS_PRELOAD = True
-
-# Enable the browser's Cross-Site Scripting (XSS) filter for added security.
-SECURE_BROWSER_XSS_FILTER = True
+CSRF_COOKIE_SECURE = False
 
 # Enable using X-Forwarded-Proto header to determine request security.
 # Set to True to make the development server treat requests as HTTPS.
-USE_X_FORWARDED_PROTO = True
+USE_X_FORWARDED_PROTO = False
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Keep this line for reverse proxy configuration
+
 
 
 # Content Security Policy (CSP) header configuration to define a policy
@@ -101,7 +94,9 @@ STATIC_URL = '/static/'
 DEBUG = False
 
 # Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]', 'localhost:8001']
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]', 'localhost:8001']
+ALLOWED_HOSTS = ['*']
+
 
 SSL_CERTIFICATE_PATH = 'ssl/localhost.crt'
 SSL_KEY_PATH = 'ssl/localhost.key'
