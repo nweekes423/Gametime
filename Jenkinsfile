@@ -19,12 +19,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Navigate to the project directory
                     dir('/Users/will/Gametime/nba_notifier') {
-                        // Activate the virtual environment
                         sh '/Users/will/Gametime/nba_notifier/venv/bin/activate'
-
-                        // Use the full path to pip within the virtual environment
                         sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install -r requirements.txt'
                     }
                 }
@@ -34,9 +30,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Navigate to the project directory
                     dir('/Users/will/Gametime/nba_notifier') {
-                        // Run the tests
                         sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py test game_monitor'
                     }
                 }
@@ -46,22 +40,32 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Navigate to the project directory
                     dir('/Users/will/Gametime/nba_notifier') {
-                        // Use 'withCredentials' to securely access the GitHub secret
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
-                            // Example: Print the GitHub secret
                             sh 'echo $GITHUB_SECRET'
 
-                            // Conditional deployment steps based on the environment
                             if (params.ENVIRONMENT == 'main') {
                                 sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py collectstatic --noinput'
                                 sh '/Users/will/Gametime/nba_notifier/venv/bin/python manage.py migrate'
-                                // Additional production deployment steps can be added as needed
                             } else {
                                 echo "Skipping production deployment steps for a non-production environment."
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Elastic Beanstalk') {
+            when {
+                expression { params.ENVIRONMENT == 'dev' }
+            }
+            steps {
+                script {
+                    dir('/Users/will/Gametime/nba_notifier') {
+                        sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install awsebcli'
+                        sh 'venv/bin/eb use Github-Automation --region us-west-2'
+                        sh 'venv/bin/eb deploy Github-Automation'
                     }
                 }
             }
