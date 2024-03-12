@@ -56,16 +56,39 @@ pipeline {
             }
         }
 
-        stage('Deploy to Elastic Beanstalk') {
-            when {
-                expression { params.ENVIRONMENT == 'dev' }
+        stage('Create Prod Environment') {
+    when {
+        expression { params.ENVIRONMENT == 'main' }
+        script {
+            def envExists = sh(
+                script: "aws elasticbeanstalk describe-environments --environment-names Github-Automation-Prod --region us-west-2 --query 'Environments' --output text",
+                returnStatus: true
+            ) == 0
+            if (!envExists) {
+                script {
+                    dir('/Users/will/Gametime/nba_notifier') {
+                        sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install awsebcli'
+                        sh 'venv/bin/eb create Github-Automation-Prod --region us-west-2'
+                    }
+                }
             }
+        }
+    }
+}
+
+        stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
                     dir('/Users/will/Gametime/nba_notifier') {
                         sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install awsebcli'
-                        sh 'venv/bin/eb use Github-Automation --region us-west-2'
-                        sh 'venv/bin/eb deploy Github-Automation'
+
+                        if (params.ENVIRONMENT == 'dev') {
+                            sh 'venv/bin/eb use Github-Automation --region us-west-2'
+                            sh 'venv/bin/eb deploy Github-Automation'
+                        } else if (params.ENVIRONMENT == 'main') {
+                            sh 'venv/bin/eb use Github-Automation-Prod --region us-west-2'
+                            sh 'venv/bin/eb deploy Github-Automation-Prod'
+                        }
                     }
                 }
             }
