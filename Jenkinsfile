@@ -56,25 +56,16 @@ pipeline {
             }
         }
 
-        stage('Create Prod Environment') {
-    when {
-        expression { params.ENVIRONMENT == 'main' }
-        script {
-            def envExists = sh(
-                script: "aws elasticbeanstalk describe-environments --environment-names Github-Automation-Prod --region us-west-2 --query 'Environments' --output text",
-                returnStatus: true
-            ) == 0
-            if (!envExists) {
+        stage('Create or Update Prod Environment') {
+            steps {
                 script {
                     dir('/Users/will/Gametime/nba_notifier') {
                         sh '/Users/will/Gametime/nba_notifier/venv/bin/pip install awsebcli'
-                        sh 'venv/bin/eb create Github-Automation-Prod --region us-west-2'
+                        sh 'venv/bin/eb deploy Github-Automation-Prod --region us-west-2'
                     }
                 }
             }
         }
-    }
-}
 
         stage('Deploy to Elastic Beanstalk') {
             steps {
