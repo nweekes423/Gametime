@@ -55,6 +55,23 @@ pipeline {
             }
         }
 
+        stage('Deploy to Elastic Beanstalk') {
+            steps {
+                script {
+                    dir('/Users/will/Gametime/nba_notifier') {
+                        sh 'source venv/bin/activate && pip install awsebcli'
+
+                        if (params.ENVIRONMENT == 'dev') {
+                            sh 'source venv/bin/activate && eb use Github-Automation --region us-west-2'
+                            sh 'source venv/bin/activate && eb deploy Github-Automation'
+                        } else if (params.ENVIRONMENT == 'main') {
+                            sh 'source venv/bin/activate && eb use Github-Automation-Prod --region us-west-2'
+                            sh 'source venv/bin/activate && eb deploy Github-Automation-Prod'
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Push to Docker Hub') {
             steps {

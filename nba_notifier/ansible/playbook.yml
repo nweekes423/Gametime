@@ -1,37 +1,16 @@
 ---
-- name: Deploy Django App
+- name: Run Django management commands with virtual environment activation
   hosts: webserver
-
   tasks:
-    - name: Clone Git repository
-      git:
-        repo: https://github.com/nweekes423/Gametime.git
-        dest: /home/kali/Gametime  # Ensure the repository is cloned directly into the home directory
+    - name: Gathering Facts
+      ansible.builtin.setup:
 
-    - name: Move nba_notifier directory
-      command: mv /home/kali/Gametime/nba_notifier /home/kali/Gametime/Gametime
-      args:
-        creates: /home/kali/Gametime/Gametime/nba_notifier  # Check if the directory already exists in the correct location
-
-    - name: Activate virtual environment
-      command: /home/kali/Gametime/venv/bin/activate
-
-    - name: Install Python dependencies
-      pip:
-        requirements: /home/kali/Gametime/Gametime/nba_notifier/requirements.txt
-
-    - name: Collect static files
-      django_manage:
-        command: collectstatic --no-input
-        app_path: /home/kali/Gametime/Gametime/nba_notifier
-
-    - name: Run migrations
-      django_manage:
-        command: migrate
-        app_path: /home/kali/Gametime/Gametime/nba_notifier
-
-    - name: Restart Gunicorn
-      systemd:
-        name: gunicorn
-        state: restarted
+    - name: Activate virtual environment and run commands
+      ansible.builtin.shell:
+        cmd: |
+          source /home/kali/Gametime/venv/bin/activate &&
+          python manage.py collectstatic --no-input &&
+          python manage.py check
+        executable: /bin/bash
+        chdir: /home/kali/Gametime
 
