@@ -1,0 +1,19 @@
+<!-- game_monitor/templates/games_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game List</title>
+</head>
+<body>
+    <h1>Game List</h1>
+    <ul>
+        {% for game in games_info %}
+            <li>
+                <strong>{{ game.home_team }}</strong> vs <strong>{{ game.away_team }}</strong>
+                - Score: {{ game.score }}, Time Left: {{ game.time_left }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+

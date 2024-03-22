@@ -1,0 +1,4 @@
+.env
+venv/
+ssl/localhost.crt
+ssl/localhost.key

@@ -1,0 +1,23 @@
+<div class="game-selection">
+  <h2>Select a Game:</h2>
+  <select id="game-select">
+    <option value="">-- Choose a Game --</option>
+  </select>
+  <script>
+    // Fetch game data using AJAX and populate the dropdown
+    fetch('/api/mock_nba_api/')
+      .then(response => response.json())
+      .then(data => {
+        const games = data.close_games;
+        for (const game of games) {
+          const option = document.createElement('option');
+          option.value = game.id; // Assuming "id" is the unique identifier
+          option.text = `${game.home_team} vs. ${game.away_team}`;
+          document.getElementById('game-select').appendChild(option);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching games:', error);
+      });
+  </script>
+</div>

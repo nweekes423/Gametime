@@ -1,0 +1,2 @@
+Update docker image to redirect http to https
+Use https support on local manage.py runserver
