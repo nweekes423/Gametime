@@ -29,17 +29,17 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 # Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
 #Set to False for non ssl
 #Set to False for non-SSL
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # Use a secure-only session cookie, making it more resistant to session hijacking.
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 
 # Use a secure-only CSRF (Cross-Site Request Forgery) cookie, enhancing security against CSRF attacks.
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
 
 # Enable using X-Forwarded-Proto header to determine request security.
 # Set to True to make the development server treat requests as HTTPS.
-USE_X_FORWARDED_PROTO = False
+USE_X_FORWARDED_PROTO = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Keep this line for reverse proxy configuration
 
@@ -55,6 +55,9 @@ CSP_HEADER = {
     'script-src': ["'self'", 'code.jquery.com'],
 
 }
+
+
+
 
 # Use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
