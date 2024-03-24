@@ -19,8 +19,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && pip install -r requirements.txt'
+                    dir('/Users/will/Gametime/app') {
+                        sh 'source nba_notifier/venv/bin/activate && pip install -r requirements.txt'
                     }
                 }
             }
@@ -29,8 +29,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && python manage.py test game_monitor'
+                    dir('/Users/will/Gametime/app/') {
+                        sh 'source nba_notifier/venv/bin/activate && python manage.py test game_monitor'
                     }
                 }
             }
@@ -39,13 +39,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
+                    dir('/Users/will/Gametime/app') {
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
                             sh 'echo $GITHUB_SECRET'
 
                             if (params.ENVIRONMENT == 'main') {
-                                sh 'source venv/bin/activate && python manage.py collectstatic --noinput'
-                                sh 'source venv/bin/activate && python manage.py migrate'
+                                sh 'source nba_notifier/venv/bin/activate && python manage.py collectstatic --noinput'
+                                sh 'source nba_notifier/venv/bin/activate && python manage.py migrate'
                             } else {
                                 echo "Skipping production deployment steps for a non-production environment."
                             }
@@ -55,15 +55,13 @@ pipeline {
             }
         }
 
-
-
         stage('Push to Docker Hub') {
             steps {
                 script {
-              		dir('/Users/will/Gametime') {
-                		sh 'source nba_notifier/venv/bin/activate && /usr/local/bin/docker build -t dockerrandy729/gametime:latest .'
-                		sh 'source nba_notifier/venv/bin/activate && /usr/local/bin/docker push dockerrandy729/gametime:latest'
-            	}
+                    dir('/Users/will/Gametime/app/') {
+                        sh 'source nba_notifier/venv/bin/activate && /usr/local/bin/docker build -t dockerrandy729/gametime:latest .'
+                        sh 'source nba_notifier/venv/bin/activate && /usr/local/bin/docker push dockerrandy729/gametime:latest'
+                    }
                 }
             }
         }
