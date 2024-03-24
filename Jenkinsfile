@@ -56,16 +56,15 @@ pipeline {
         }
 
      
-
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    dir('/Users/will/Gametime') {
-                        sh 'source venv/bin/activate && /usr/local/bin/docker tag my-django-app dockerrandy729/gametime:latest'
-                        sh 'source venv/bin/activate && /usr/local/bin/docker push dockerrandy729/gametime:latest'
-                    }
-                }
-            }
+	stage('Push to Docker Hub') {
+    	    steps {
+        	script {
+           		 // Build Docker image
+            		sh '/Users/will/Gametime/venv/bin/docker build -t my-django-app /Users/will/Gametime'
+            
+            		// Tag and push Docker image
+            		sh '/Users/will/Gametime/venv/bin/docker tag my-django-app dockerrandy729/gametime:latest'
+           		sh '/Users/will/Gametime/venv/bin/docker push dockerrandy729/gametime:latest'
         }
     }
 }
