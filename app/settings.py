@@ -164,12 +164,18 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+]
+
+urlpatterns = [
+    # other URL patterns
+    path('metrics/', include('django_prometheus.urls')),
 ]
 
 ROOT_URLCONF = "nba_notifier.urls"
