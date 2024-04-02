@@ -41,15 +41,12 @@ pipeline {
                 script {
                     dir('/Users/will/Gametime') {
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
+                            // Kill any existing process using port 8000
+                            sh 'lsof -ti:8000 | xargs kill'
                             sh 'echo $GITHUB_SECRET'
-
-                            if (params.ENVIRONMENT == 'main') {
-                                sh 'source venv/bin/activate && python app/manage.py collectstatic --noinput'
-                                sh 'source venv/bin/activate && python app/manage.py migrate'
-				sh 'source venv/bin/activate && python manage.py runsslserver 0.0.0.0:8000 --certificate ssl/localhost.crt --key ssl/localhost.key  
-                            } else {
-                                echo "Skipping production deployment steps for a non-production environment."
-                            }
+                            sh 'source venv/bin/activate && python app/manage.py collectstatic --noinput'
+                            sh 'source venv/bin/activate && python app/manage.py migrate'
+                            sh 'source venv/bin/activate && python app/manage.py check'  
                         }
                     }
                 }
@@ -68,5 +65,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Test Docker Image') {
+            steps {
+                script {
+                    // Run Docker container from the latest image, map container port 8001 to host port 8000
+                    sh '/usr/local/bin/docker run -d -p 8000:8001 dockerrandy729/gametime:latest'
+
+                    // Sleep for 10 seconds to give Docker container time to set up
+                    sh 'sleep 20'
+
+                    // Perform some basic tests on the running container
+                    // For example, you can use curl to check if the web server responds
+                    echo 'Testing web server with curl...'
+                    sh 'curl https://localhost:8000 -k -vv'
+                    echo 'Curl request completed.'
+                }
+            }
+        }
     }
 }
+
