@@ -16,7 +16,7 @@ services:
     ports:
       - 9100:9100
   alert-manager:
-    image: prom/alertmanager
+    image: prom/alertmanager:v0.23.0  # Replace v0.23.0 with the version you want to use
     volumes:
       - "./alertmanager.yml:/alertmanager/alertmanager.yml"
     networks:
@@ -26,3 +26,4 @@ services:
 networks:
   localprom:
     driver: bridge
+

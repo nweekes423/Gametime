@@ -1,35 +1,37 @@
 import json
 import os
 import re
-
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.http import HttpResponse
 from nba_api.live.nba.endpoints import scoreboard
+from prometheus_client import CollectorRegistry, generate_latest, Gauge, CONTENT_TYPE_LATEST
 
 from game_monitor.forms import PhoneForm
 from .models import UserPhone
 from .utils import send_text_message
 
+# Define Prometheus metrics
+REQUEST_COUNTER = Gauge('myapp_http_requests_total', 'Total HTTP Requests')
+QUEUE_SIZE_GAUGE = Gauge('myapp_queue_size', 'Size of the Queue')
 
-# In game_monitor/views.py
-
-from django.shortcuts import render
 
 def games_view(request):
+    REQUEST_COUNTER.inc()
     try:
         games = scoreboard.ScoreBoard()
         data = games.get_dict()
 
         game_info = [
-        {
-            "home_team": game["homeTeam"]["teamName"],
-            "away_team": game["awayTeam"]["teamName"],
-            "score": f"{game['homeTeam']['score']} - {game['awayTeam']['score']}",
-            "time_left": game["gameClock"],
-        }
-        for game in data["scoreboard"]["games"]
+            {
+                "home_team": game["homeTeam"]["teamName"],
+                "away_team": game["awayTeam"]["teamName"],
+                "score": f"{game['homeTeam']['score']} - {game['awayTeam']['score']}",
+                "time_left": game["gameClock"],
+            }
+            for game in data["scoreboard"]["games"]
         ]
         return render(request, 'game_template.html', {'games_info': game_info})
     except Exception as e:
@@ -38,8 +40,6 @@ def games_view(request):
 
 def root_view(request):
     return render(request, "root.html")
-
-
 
 
 def phone_view(request):
@@ -76,7 +76,6 @@ def phone_view(request):
 
 
 
-
 def success_view(request):
     # Render a simple success page (you'll need to create this template)
 
@@ -98,17 +97,6 @@ def parse_time(game_clock):
     # Assuming game_clock format is "MM:SS"
     minutes, seconds = map(int, game_clock.split(":"))
     return minutes + seconds / 60
-
-
-"""
-def is_game_close(game_data):
-    # Check if it's the 3rd or 4th quarter and time is less than 5 minutes
-    if game_data['period'] in [3, 4] and parse_time(game_data['gameClock']) < 5:
-        # Check if the score difference is 5 points or fewer
-        score_diff = abs(game_data['homeTeam']['score'] - game_data['awayTeam']['score'])
-        return score_diff <= 5
-    return False
-"""
 
 
 def is_close_game(game):
@@ -146,16 +134,12 @@ def fetch_and_update_scoreboard():
         data = games.get_dict()
 
         # Check each game
-        for game in data["scoreboard"]["games"]:
-            if is_close_game(game):
-                message_body = f"Close game {game['homeTeam']['teamName']} vs {game['awayTeam']['teamName']} - Score: {game['homeTeam']['score']} - {game['awayTeam']['score']}"
-                # Send sms to all registered users
-                for user_phone in UserPhone.objects.all():
-                    send_text_message(user_phone.phone_number, message_body)
-                print(
-                    f"Close game detected: {game['homeTeam']['teamName']} vs {game['awayTeam']['teamName']}"
-                )
-                # You can add more logic here, like notifications
+        close_games = [game for game in data["scoreboard"]["games"] if is_close_game(game)]
+        QUEUE_SIZE_GAUGE.set(len(close_games))
+
+        # Send sms to all registered users
+        for user_phone in UserPhone.objects.all():
+            send_text_message(user_phone.phone_number, "Close game detected!")
 
         # Saving to scoreboard.json
         with open("scoreboard.json", "w") as file:
@@ -167,33 +151,10 @@ def fetch_and_update_scoreboard():
         print(f"Error updating scoreboard: {e}")
 
 
+def prometheus_metrics(request):
+    # Expose metrics endpoint (NEW)
+    return HttpResponse(generate_latest(), content_type=CONTENT_TYPE_LATEST)
+
+
 if __name__ == "__main__":
     fetch_and_update_scoreboard()
-
-
-def mock_nba_api(request):
-    file_path = os.path.join(os.path.dirname(__file__), "scoreboard.json")
-
-    try:
-        with open(file_path, "r") as file:
-            data = json.load(file)
-
-        close_games = [
-            game for game in data["scoreboard"]["games"] if is_close_game(game)
-        ]
-        close_games_info = [
-            {
-                "home_team": game["homeTeam"]["teamName"],
-                "away_team": game["awayTeam"]["teamName"],
-                "score": f"{game['homeTeam']['score']} - {game['awayTeam']['score']}",
-                "time_left": game["gameClock"],
-            }
-            for game in close_games
-        ]
-
-        return JsonResponse({"close_games": close_games_info})
-
-    except FileNotFoundError:
-        return JsonResponse({"error": "File not found"}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON"}, status=500)

@@ -29,7 +29,7 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 # Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
 #Set to False for non ssl
 #Set to False for non-SSL
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # Use a secure-only session cookie, making it more resistant to session hijacking.
 SESSION_COOKIE_SECURE = False
@@ -103,45 +103,45 @@ SSL_KEY_PATH = 'ssl/localhost.key'
 
 
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "fmt": "%(levelname)s %(name)s %(message)s %(asctime)s",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'fmt': '%(levelname)s %(name)s %(message)s %(asctime)s',
         },
     },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "json",
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
         },
-        # Optionally, you can set up a file handler
-        "file": {
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/django.log"),
-            "formatter": "json",
-            "maxBytes": 1024 * 1024 * 5,  # 5 MB
-            "backupCount": 5,
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/django.log',
+            'formatter': 'json',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
         },
-        "celery_file": {  # New Celery file handler
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/celery.log"),
-            "formatter": "json",
-            "maxBytes": 1024 * 1024 * 5,  # 5 MB
-            "backupCount": 5,
+        'celery_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/celery.log',
+            'formatter': 'json',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
         },
     },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
         },
-        # Configure other loggers...
     },
 }
+
 
 # Application definition
 

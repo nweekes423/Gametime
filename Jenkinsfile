@@ -46,6 +46,7 @@ pipeline {
                             if (params.ENVIRONMENT == 'main') {
                                 sh 'source venv/bin/activate && python app/manage.py collectstatic --noinput'
                                 sh 'source venv/bin/activate && python app/manage.py migrate'
+				sh 'source venv/bin/activate && python manage.py runsslserver 0.0.0.0:8000 --certificate ssl/localhost.crt --key ssl/localhost.key  
                             } else {
                                 echo "Skipping production deployment steps for a non-production environment."
                             }

@@ -33,7 +33,7 @@ class PhoneViewTests(TestCase):
         # Check if the form is not valid and stays on the same page
         #Change this to 301 when https because of ssl warning redirect. 
         #Change to 200 for http since no redirect
-        self.assertEqual(response.status_code, 200)  # Update to check for a status code of 200
+        self.assertEqual(response.status_code, 301)  # Update to check for a status code of 200
         self.assertEqual(UserPhone.objects.count(), 0)
 
         logger.warning(f"Invalid phone number submitted: 'invalid_number'")
