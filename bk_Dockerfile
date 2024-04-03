@@ -5,32 +5,22 @@ FROM python:3
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install Nginx
-RUN apt-get update && apt-get install -y nginx
-
-# Copy Nginx configuration file
-COPY nba_notifier/nginx.conf /etc/nginx/nginx.conf
-
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the application files into the container at /app
+COPY ./app /app
+
+# Make the root file system writable (if necessary)
+USER root
+RUN chmod 777 /
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r nba_notifier/requirements.txt
-
-# Copy SSL certificates
-COPY nba_notifier/ssl/localhost.crt /app/nba_notifier/ssl/
-COPY nba_notifier/ssl/localhost.key /app/nba_notifier/ssl/
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Run the application
-# Run the application
-CMD ["python", "nba_notifier/manage.py", "runserver_plus", \
-     "--cert-file", "/app/nba_notifier/ssl/localhost.crt", \
-     "--key-file", "/app/nba_notifier/ssl/localhost.key", "0.0.0.0:8000"]
-
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 

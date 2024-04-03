@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-django-app-deployment
+  labels:
+    app: my-django-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-django-app
+  template:
+    metadata:
+      labels:
+        app: my-django-app
+    spec:
+      containers:
+      - name: my-django-app-container
+        image: 78aa847ece99  # Update this line with the new image ID or tag
+        ports:
+        - containerPort: 8000
+
