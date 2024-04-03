@@ -73,12 +73,12 @@ pipeline {
                     sh '/usr/local/bin/docker run -d -p 8000:8000 dockerrandy729/gametime:latest'
 
                     // Sleep for 30 seconds to give Docker container time to set up
-                    sh 'sleep 30'
+                    sh 'sleep 20'
 
                     // Perform some basic tests on the running container
                     // For example, you can use curl to check if the web server responds
                     echo 'Testing web server with curl...'
-                    sh 'curl http://localhost:8000 -vv'
+                    sh 'curl https://localhost:8000 -vv -k'
                     echo 'Curl request completed.'
                 }
             }
