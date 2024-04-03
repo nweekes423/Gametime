@@ -41,8 +41,6 @@ pipeline {
                 script {
                     dir('/Users/will/Gametime') {
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
-                            // Kill any existing process using port 8000
-                            sh 'lsof -ti:8000 | xargs kill'
                             sh 'echo $GITHUB_SECRET'
                             sh 'source venv/bin/activate && python app/manage.py collectstatic --noinput'
                             sh 'source venv/bin/activate && python app/manage.py migrate'
@@ -69,16 +67,16 @@ pipeline {
         stage('Test Docker Image') {
             steps {
                 script {
-                    // Run Docker container from the latest image, map container port 8000 to host port 8000
-                    sh '/usr/local/bin/docker run -d -p 8000:8000 dockerrandy729/gametime:latest'
+                    // Run Docker container from the latest image, map container port 8000 to a different host port, e.g., 8080
+                    sh '/usr/local/bin/docker run -d -p 8081:8000 dockerrandy729/gametime:latest'
 
-                    // Sleep for 30 seconds to give Docker container time to set up
+                    // Sleep for 20 seconds to give Docker container time to set up
                     sh 'sleep 20'
 
                     // Perform some basic tests on the running container
                     // For example, you can use curl to check if the web server responds
                     echo 'Testing web server with curl...'
-                    sh 'curl https://localhost:8000 -vv -k'
+                    sh 'curl https://localhost:8081 -vv -k'
                     echo 'Curl request completed.'
                 }
             }
