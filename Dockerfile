@@ -22,8 +22,8 @@ RUN chmod 777 /
 RUN pip install  -r /app/nba_notifier/requirements.txt
 
 # Expose the port the app runs on
-EXPOSE 8001
+EXPOSE 8000
 
 # Run the application
-CMD ["python", "manage.py", "runsslserver", "0.0.0.0:8001", "--certificate", "/ssl/localhost.crt", "--key", "/ssl/localhost.key"]
+CMD ["python", "manage.py", "runsslserver", "0.0.0.0:8000", "--certificate", "/ssl/localhost.crt", "--key", "/ssl/localhost.key"]
 
