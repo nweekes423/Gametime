@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:   # Mount SSL files into Django container
+      - ./app/nba_notifier/ssl:/etc/nginx/app/nba_notifier/ssl
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./app/nba_notifier/ssl:/etc/nginx/app/nba_notifier/ssl   # Mount SSL files into Nginx container
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django
+

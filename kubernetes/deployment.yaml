@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: my-django-app-container
-        image: 78aa847ece99  # Update this line with the new image ID or tag
+        image: dockerrandy729/gametime:latest  # Update this line with the correct image name and tag
         ports:
         - containerPort: 8000
 

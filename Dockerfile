@@ -9,21 +9,14 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Copy the application files into the container at /app
-COPY ./app /app
-
-# Copy SSL certificates into the container
-COPY ./app/nba_notifier/ssl /ssl
-
-# Make the root file system writable (if necessary)
-USER root
-RUN chmod 777 /
+COPY app /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install  -r /app/nba_notifier/requirements.txt
+RUN pip install -r /app/nba_notifier/requirements.txt
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "manage.py", "runsslserver", "0.0.0.0:8000", "--certificate", "/ssl/localhost.crt", "--key", "/ssl/localhost.key"]
+# Run the application without SSL
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
