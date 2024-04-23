@@ -1,16 +1,7 @@
-"""
-WSGI config for nba_notifier project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
-"""
-
+# app/nba_notifier/wsgi.py
 import os
-
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nba_notifier.settings")
-
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nba_notifier.settings')
 application = get_wsgi_application()
+

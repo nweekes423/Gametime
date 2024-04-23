@@ -29,7 +29,7 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 # Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
 #Set to False for non ssl
 #Set to False for non-SSL
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 # Use a secure-only session cookie, making it more resistant to session hijacking.
 SESSION_COOKIE_SECURE = False
@@ -91,15 +91,21 @@ STATIC_URL = '/static/'
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]', 'localhost:8001']
 ALLOWED_HOSTS = ['*']
 
+if os.getenv("DOCKER_ENV"):
+    SSL_CERTIFICATE_PATH = '/etc/nginx/app/nba_notifier/ssl/localhost.crt'
+    SSL_KEY_PATH = '/etc/nginx/app/nba_notifier/ssl/localhost.key'
+else:
+    SSL_CERTIFICATE_PATH = '/Users/will/Gametime/app/nba_notifier/ssl/localhost.crt'
+    SSL_KEY_PATH = '/Users/will/Gametime/app/nba_notifier/ssl/localhost.key'
 
-SSL_CERTIFICATE_PATH = 'ssl/localhost.crt'
-SSL_KEY_PATH = 'ssl/localhost.key'
+#SSL_CERTIFICATE_PATH = 'nba_notifier/ssl/localhost.crt'
+#SSL_KEY_PATH = 'nba_notifier/ssl/localhost.key'
 
 
 LOGGING = {

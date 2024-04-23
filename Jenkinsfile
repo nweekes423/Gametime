@@ -49,8 +49,7 @@ pipeline {
                             // Stop the existing container
 
                             // Start the new container
-                            sh '/usr/local/bin/docker-compose up --build -d nginx'
-                            sh '/usr/local/bin/docker-compose up --build -d django'
+                            sh '/usr/local/bin/docker-compose up --build -d'
                             
                         }
                     }
@@ -63,7 +62,7 @@ pipeline {
                 script {
                     // Authenticate with Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: '67925980-58ae-4262-bd41-d178efedad93', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '/usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        sh '/usr/local/bin/docker login -u $DOCKE R_USERNAME -p $DOCKER_PASSWORD'
                     }
 
                     // Tag and push Docker image
@@ -85,7 +84,7 @@ pipeline {
                     // Perform some basic tests on the running container
                     // For example, you can use curl to check if the web server responds
                     echo 'Testing web server with curl...'
-                    sh 'curl -Lv --insecure http://localhost'
+                    sh 'curl -vv http://127.0.0.1:8000'
                     echo 'Curl request completed.'
                 }
             }
