@@ -19,8 +19,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && pip install -r requirements.txt'
+                    dir('/Users/will/Gametime') {
+                        sh 'source venv/bin/activate && pip install -r app/nba_notifier/requirements.txt'
                     }
                 }
             }
@@ -29,8 +29,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && python manage.py test game_monitor'
+                    dir('/Users/will/Gametime') {
+                        sh 'source venv/bin/activate && python app/manage.py test game_monitor'
                     }
                 }
             }
@@ -39,34 +39,19 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
+                    dir('/Users/will/Gametime') {
                         withCredentials([string(credentialsId: 'Secret-ID', variable: 'GITHUB_SECRET')]) {
                             sh 'echo $GITHUB_SECRET'
+                            sh 'source venv/bin/activate && python app/manage.py collectstatic --noinput'
+                            sh 'source venv/bin/activate && python app/manage.py migrate'
+                            sh 'source venv/bin/activate && python app/manage.py check'  
 
-                            if (params.ENVIRONMENT == 'main') {
-                                sh 'source venv/bin/activate && python manage.py collectstatic --noinput'
-                                sh 'source venv/bin/activate && python manage.py migrate'
-                            } else {
-                                echo "Skipping production deployment steps for a non-production environment."
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                            // Stop the existing container
 
-        stage('Deploy to Elastic Beanstalk') {
-            steps {
-                script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && pip install awsebcli'
-
-                        if (params.ENVIRONMENT == 'dev') {
-                            sh 'source venv/bin/activate && eb use Github-Automation --region us-west-2'
-                            sh 'source venv/bin/activate && eb deploy Github-Automation'
-                        } else if (params.ENVIRONMENT == 'main') {
-                            sh 'source venv/bin/activate && eb use Github-Automation-Prod --region us-west-2'
-                            sh 'source venv/bin/activate && eb deploy Github-Automation-Prod'
+                            // Start the new container
+                            sh '/usr/local/bin/docker-compose up --build -d nginx'
+                            sh '/usr/local/bin/docker-compose up --build -d django'
+                            
                         }
                     }
                 }
@@ -76,12 +61,35 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    dir('/Users/will/Gametime/nba_notifier') {
-                        sh 'source venv/bin/activate && /usr/local/bin/docker tag my-django-app dockerrandy729/gametime:latest'
-                        sh 'source venv/bin/activate && /usr/local/bin/docker push dockerrandy729/gametime:latest'
+                    // Authenticate with Docker Hub using credentials
+                    withCredentials([usernamePassword(credentialsId: '67925980-58ae-4262-bd41-d178efedad93', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '/usr/local/bin/docker login -u $DOCKE R_USERNAME -p $DOCKER_PASSWORD'
                     }
+
+                    // Tag and push Docker image
+                    sh '/usr/local/bin/docker tag my-django-app dockerrandy729/gametime:latest'
+                    sh '/usr/local/bin/docker push dockerrandy729/gametime:latest'
+                }
+            }
+        }
+
+        stage('Test Docker Image') {
+            steps {
+                script {
+                    // Run Docker container from the latest image, map container port 8000 to a different host port, e.g., 8080
+                    // Starting the services again to ensure they are running for testing
+                    
+                    // Sleep for 20 seconds to give Docker container time to set up
+                    sh 'sleep 20'
+
+                    // Perform some basic tests on the running container
+                    // For example, you can use curl to check if the web server responds
+                    echo 'Testing web server with curl...'
+                    sh 'curl -vv http://127.0.0.1:8000'
+                    echo 'Curl request completed.'
                 }
             }
         }
     }
 }
+

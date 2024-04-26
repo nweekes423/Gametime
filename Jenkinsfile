@@ -49,8 +49,8 @@ pipeline {
                             // Stop the existing container
 
                             // Start the new container
-                            sh '/usr/local/bin/docker-compose up --build -d nginx'
-                            sh '/usr/local/bin/docker-compose up --build -d django'
+                            sh "export PATH=/usr/local/bin:\$PATH && docker-compose up --build -d"
+
                             
                         }
                     }
@@ -67,7 +67,7 @@ pipeline {
                     }
 
                     // Tag and push Docker image
-                    sh '/usr/local/bin/docker tag my-django-app dockerrandy729/gametime:latest'
+                    sh '/usr/local/bin/docker tag gametime-django dockerrandy729/gametime:latest'
                     sh '/usr/local/bin/docker push dockerrandy729/gametime:latest'
                 }
             }
@@ -85,11 +85,12 @@ pipeline {
                     // Perform some basic tests on the running container
                     // For example, you can use curl to check if the web server responds
                     echo 'Testing web server with curl...'
-                    sh 'curl -Lv --insecure http://localhost'
+                    sh 'curl -vv http://127.0.0.1:8000'
                     echo 'Curl request completed.'
                 }
             }
         }
     }
 }
+
 
