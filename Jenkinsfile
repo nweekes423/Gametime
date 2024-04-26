@@ -49,7 +49,7 @@ pipeline {
                             // Stop the existing container
 
                             // Start the new container
-                            sh '/usr/local/bin/docker-compose up --build -d'
+			    sh "export PATH=/usr/local/bin:\$PATH && docker-compose up --build -d"
                             
                         }
                     }
