@@ -49,7 +49,8 @@ pipeline {
                             // Stop the existing container
 
                             // Start the new container
-			    sh "export PATH=/usr/local/bin:\$PATH && docker-compose up --build -d"
+                            sh "export PATH=/usr/local/bin:\$PATH && docker-compose up --build -d"
+
                             
                         }
                     }
@@ -62,11 +63,11 @@ pipeline {
                 script {
                     // Authenticate with Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: '67925980-58ae-4262-bd41-d178efedad93', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '/usr/local/bin/docker login -u $DOCKE R_USERNAME -p $DOCKER_PASSWORD'
+                        sh '/usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     }
 
                     // Tag and push Docker image
-                    sh '/usr/local/bin/docker tag my-django-app dockerrandy729/gametime:latest'
+                    sh '/usr/local/bin/docker tag gametime-django dockerrandy729/gametime:latest'
                     sh '/usr/local/bin/docker push dockerrandy729/gametime:latest'
                 }
             }
@@ -91,4 +92,5 @@ pipeline {
         }
     }
 }
+
 
