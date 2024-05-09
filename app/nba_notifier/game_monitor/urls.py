@@ -8,8 +8,13 @@ urlpatterns = [
     path(
         "mock-api/", views.mock_nba_api, name="mock-nba-api"
     ),  # App specific URL pattern
-    path("phone-form/", views.phone_view, name="phone-form"),  # Corrected view name
-    path("success/", views.success_view, name="success-page"),  # Added success page URL
+    # Corrected view name
+    path("phone-form/", views.phone_view, name="phone-form"),
+    # Added success page URL
+    path("success/", views.success_view, name="success-page"),
+    # NEW: Endpoint for Prometheus metrics
+    path("metrics/", views.prometheus_metrics, name="prometheus-metrics"),
+
     #path("game-monitor/", include("game_monitor.urls")),
 
     # Add other URL patterns specific to this app here

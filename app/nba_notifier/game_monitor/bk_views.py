@@ -36,8 +36,6 @@ def games_view(request):
         return render(request, 'game_template.html', {'games_info': game_info})
     except Exception as e:
         print(f"Error fetching games: {e}")
-        # NEW: Increment a separate counter for errors
-        ERROR_COUNTER.inc()
         return render(request, 'error_template.html', {'error_message': 'No games available'})
 
 def root_view(request):
@@ -160,4 +158,3 @@ def prometheus_metrics(request):
 
 if __name__ == "__main__":
     fetch_and_update_scoreboard()
-

@@ -1,26 +1,27 @@
 # Use an official Python runtime as a parent image
-FROM python:3
+FROM python:3.10.0
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /Gametime
 
-# Copy the application files into the container at /app
-COPY ./app /app
+# Copy the application files into the container at /Gametime
+COPY . /Gametime
 
-# Make the root file system writable (if necessary)
-USER root
-RUN chmod 777 /
+# Copy SSL certificates for Apache
+COPY ./app/nba_notifier/ssl /etc/apache2/ssl
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y apache2
+RUN pip install -r app/nba_notifier/requirements.txt
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run the application with SSL using Gunicorn
+#CMD ["gunicorn", "--chdir", "app", "--bind", "0.0.0.0:8000", "--certfile", "/Gametime/app/nba_notifier/ssl/localhost.crt", "--keyfile", "/Gametime/app/nba_notifier/ssl/localhost.key", "nba_notifier.wsgi:application"]
+CMD ["gunicorn", "--chdir", "app", "--bind", "0.0.0.0:8000", "nba_notifier.wsgi:application"]
 
