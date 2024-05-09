@@ -85,7 +85,7 @@ pipeline {
                     // Perform some basic tests on the running container
                     // For example, you can use curl to check if the web server responds
                     echo 'Testing web server with curl...'
-                    sh 'curl -vv http://127.0.0.1:8000'
+                    sh 'curl -kL  http://localhost'
                     echo 'Curl request completed.'
                 }
             }

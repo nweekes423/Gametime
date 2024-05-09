@@ -13,11 +13,48 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from celery.schedules import crontab
+from celery import Celery
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent
 
 load_dotenv()
+
+# Running 'python manage.py check --deploy' identifies security issues in the Django project.
+# Below are recommendations to resolve some of the identified issues.
+
+# Set the HSTS (HTTP Strict Transport Security) header duration to 1 year (in seconds).
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+
+# Enable SSL redirect, ensuring that all connections are redirected to HTTPS.
+#Set to False for non ssl
+#Set to False for non-SSL
+SECURE_SSL_REDIRECT = True
+
+# Use a secure-only session cookie, making it more resistant to session hijacking.
+SESSION_COOKIE_SECURE = True
+
+# Use a secure-only CSRF (Cross-Site Request Forgery) cookie, enhancing security against CSRF attacks.
+CSRF_COOKIE_SECURE = True
+
+# Enable using X-Forwarded-Proto header to determine request security.
+# Set to True to make the development server treat requests as HTTPS.
+USE_X_FORWARDED_PROTO = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Keep this line for reverse proxy configuration
+
+
+
+# Content Security Policy (CSP) header configuration to define a policy
+# for controlling the types of resources that a user agent is allowed to load
+# for a given page. CSP enhances security by preventing or mitigating
+# various types of attacks, such as Cross-Site Scripting (XSS) and data injection.
+CSP_HEADER = {
+    'default-src': ["'self'"],
+    'style-src': ["'self'", 'maxcdn.bootstrapcdn.com'],
+    'script-src': ["'self'", 'code.jquery.com'],
+
+}
 
 # Use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
@@ -56,10 +93,61 @@ STATIC_URL = '/static/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Just 0.0.0.0 doesn't work due to python manage.py check --deploy security recommendations.
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '[::1]', 'localhost:8001']
 ALLOWED_HOSTS = ['*']
 
-# SSL settings
-SECURE_SSL_REDIRECT = False  # Disable SSL redirection
+if os.getenv("DOCKER_ENV"):
+    SSL_CERTIFICATE_PATH = '/etc/nginx/app/nba_notifier/ssl/localhost.crt'
+    SSL_KEY_PATH = '/etc/nginx/app/nba_notifier/ssl/localhost.key'
+else:
+    SSL_CERTIFICATE_PATH = '/Users/will/Gametime/app/nba_notifier/ssl/localhost.crt'
+    SSL_KEY_PATH = '/Users/will/Gametime/app/nba_notifier/ssl/localhost.key'
+
+#SSL_CERTIFICATE_PATH = 'nba_notifier/ssl/localhost.crt'
+#SSL_KEY_PATH = 'nba_notifier/ssl/localhost.key'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'fmt': '%(levelname)s %(name)s %(message)s %(asctime)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/django.log',
+            'formatter': 'json',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+        },
+        'celery_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/celery.log',
+            'formatter': 'json',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    },
+}
+
 
 # Application definition
 
@@ -147,6 +235,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -157,4 +248,3 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"  # Adjust as per your Redis confi
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-
