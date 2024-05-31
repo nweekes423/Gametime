@@ -125,6 +125,7 @@ oauthlib==3.2.2
 opt-einsum==3.3.0
 outcome==1.3.0.post0
 packaging==23.2
+page-tracker @ file:///Users/will/page-tracker
 pandas==2.1.1
 pathspec==0.10.1
 pbr==6.0.0

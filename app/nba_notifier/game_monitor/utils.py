@@ -1,18 +1,24 @@
-from datetime import datetime
-
-import pytz
+from django.core.mail import send_mail
 from django.conf import settings
-from twilio.rest import Client
+from datetime import datetime
+import pytz
 import re
 
-
-def send_text_message(to_number, body):
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-    message = client.messages.create(
-        from_=settings.TWILIO_PHONE_NUMBER, body=body, to=to_number
+def send_email(to_email, subject, body):
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [to_email],
+        fail_silently=False,
     )
-    print(message.sid)
 
+def send_email(to_number, body):
+    # Convert phone number to email address format
+    to_email = f"{to_number}@{settings.LOCAL_SMTP_DOMAIN}"
+    
+    # Call the send_email function
+    send_email(to_email, "SMS Notification", body)
 
 def is_time_to_check_scores(current_time=None):
     if current_time is None:
@@ -23,7 +29,6 @@ def is_time_to_check_scores(current_time=None):
 
     return start_time <= current_time <= end_time
 
-
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string into minutes and seconds."""
     match = re.match(r"PT(\d+)M(\d+\.?\d*)S", duration_str)
@@ -33,3 +38,4 @@ def parse_duration(duration_str):
         return minutes, seconds
     else:
         return 0, 0
+

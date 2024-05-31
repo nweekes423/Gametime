@@ -1,0 +1,379 @@
+Running Django's built-in security checks...
+TWILIO_ACCOUNT_SID: AC5f5cfe40d0e479aa0aa8c00a388ad2bf
+TWILIO_AUTH_TOKEN: b51548a69ff74771947da2c21b384f60
+TWILIO_PHONE_NUMBER: +18888354844
+Running Bandit security linter...
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Run started:2024-05-31 01:15:57.195138
+
+Test results:
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./cleanup_script.py:2:0
+1	import os
+2	import subprocess
+3	
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./cleanup_script.py:8:8
+7	    try:
+8	        subprocess.run(command, check=True, shell=True)
+9	    except subprocess.CalledProcessError as e:
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/blacklists/blacklist_calls.html#b311-random
+   Location: ./locustfile.py:37:27
+36	        """Simulate submitting a phone number through the form."""
+37	        phone_number = f"+{random.randint(1000000000, 9999999999)}"
+38	        self.client.post(
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./nba_notifier/cleanup_script.py:2:0
+1	import os
+2	import subprocess
+3	
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./nba_notifier/cleanup_script.py:8:8
+7	    try:
+8	        subprocess.run(command, check=True, shell=True)
+9	    except subprocess.CalledProcessError as e:
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/blacklists/blacklist_calls.html#b311-random
+   Location: ./nba_notifier/locustfile.py:37:27
+36	        """Simulate submitting a phone number through the form."""
+37	        phone_number = f"+{random.randint(1000000000, 9999999999)}"
+38	        self.client.post(
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Requests call without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.6/plugins/b113_request_without_timeout.html
+   Location: ./urlcheck/urlcheck.py:23:21
+22	        if validators.url(url) is True:
+23	            status = requests.head(url).status_code
+24	            try:
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 2036
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 4
+		Medium: 1
+		High: 2
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 1
+		Medium: 0
+		High: 6
+Files skipped (1):
+	./nba_notifier/game_monitor/tests/test_views.py (syntax error while parsing AST from file)
+Checking dependencies with Safety...
++==============================================================================+
+
+                               /$$$$$$            /$$
+                              /$$__  $$          | $$
+           /$$$$$$$  /$$$$$$ | $$  \__//$$$$$$  /$$$$$$   /$$   /$$
+          /$$_____/ |____  $$| $$$$   /$$__  $$|_  $$_/  | $$  | $$
+         |  $$$$$$   /$$$$$$$| $$_/  | $$$$$$$$  | $$    | $$  | $$
+          \____  $$ /$$__  $$| $$    | $$_____/  | $$ /$$| $$  | $$
+          /$$$$$$$/|  $$$$$$$| $$    |  $$$$$$$  |  $$$$/|  $$$$$$$
+         |_______/  \_______/|__/     \_______/   \___/   \____  $$
+                                                          /$$  | $$
+                                                         |  $$$$$$/
+  by safetycli.com                                        \______/
+
++==============================================================================+
+
+ [1mREPORT[0m 
+
+[31m[22m  Safety is using PyUp's free open-source vulnerability database. This
+data is 30 days old and limited. [0m
+[31m  For real-time enhanced vulnerability data, fix recommendations, severity
+reporting, cybersecurity support, team and project policy management and more
+sign up at https://pyup.io or email sales@pyup.io[0m
+
+  Safety [1mv3.2.0[0m is scanning for [1mVulnerabilities[0m[1m...[0m
+[1m  Scanning dependencies[0m in your [1menvironment:[0m
+
+  -> /Users/will/.pyenv/versions/3.10.0/lib/python310.zip
+  -> /Users/will/.pyenv/versions/3.10.0/lib/python3.10
+  -> /Users/will/.local/lib/python3.10/site-packages
+  -> /Users/will/.pyenv/versions/3.10.0/lib/python3.10/lib-dynload
+  -> /Users/will/.pyenv/versions/3.10.0/lib/python3.10/site-packages
+  -> /Users/will/.pyenv/versions/3.10.0/bin
+
+  Using [1mopen-source vulnerability database[0m
+[1m  Found and scanned 245 packages[0m
+  Timestamp [1m2024-05-30 18:16:00[0m
+[1m  18[0m[1m vulnerabilities reported[0m
+[1m  0[0m[1m vulnerabilities ignored[0m
+
++==============================================================================+
+ [1mVULNERABILITIES REPORTED[0m 
++==============================================================================+
+
+[31m-> Vulnerability found in sqlparse version 0.4.4[0m
+[1m   Vulnerability ID: [0m67887
+[1m   Affected spec: [0m<0.5.0
+[1m   ADVISORY: [0mSqlparse 0.5.0 addresses a potential denial of service
+   (DoS) vulnerability related to recursion errors in deeply nested SQL...
+[1m   PVE-2024-67887[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/67887/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 67887 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in py version 1.11.0[0m
+[1m   Vulnerability ID: [0m51457
+[1m   Affected spec: [0m<=1.11.0
+[1m   ADVISORY: [0mPy throughout 1.11.0 allows remote attackers to conduct
+   a ReDoS (Regular expression Denial of Service) attack via a Subversion...
+[1m   CVE-2022-42969[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/51457/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 51457 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in idna version 3.4[0m
+[1m   Vulnerability ID: [0m67895
+[1m   Affected spec: [0m<3.7
+[1m   ADVISORY: [0mCVE-2024-3651 impacts the idna.encode() function, where
+   a specially crafted argument could lead to significant resource...
+[1m   CVE-2024-3651[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/67895/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 67895 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in cryptography version 41.0.7[0m
+[1m   Vulnerability ID: [0m65278
+[1m   Affected spec: [0m<42.0.0
+[1m   ADVISORY: [0mA flaw was found in the python-cryptography package.
+   This issue may allow a remote attacker to decrypt captured messages in...
+[1m   CVE-2023-50782[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/65278/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 65278 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in cryptography version 41.0.7[0m
+[1m   Vulnerability ID: [0m65647
+[1m   Affected spec: [0m<42.0.5
+[1m   ADVISORY: [0mCryptography version 42.0.5 introduces a limit on the
+   number of name constraint checks during X.509 path validation to...
+[1m   PVE-2024-65647[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/65647/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 65647 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in cryptography version 41.0.7[0m
+[1m   Vulnerability ID: [0m65212
+[1m   Affected spec: [0m>=35.0.0,<42.0.2
+[1m   ADVISORY: [0mVersions of Cryptograph starting from 35.0.0 are
+   susceptible to a security flaw in the POLY1305 MAC algorithm on PowerPC...
+[1m   CVE-2023-6129[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/65212/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 65212 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in cryptography version 41.0.7[0m
+[1m   Vulnerability ID: [0m66777
+[1m   Affected spec: [0m>=35.0.0,<42.0.2
+[1m   ADVISORY: [0mCVE-2023-6237 addresses a vulnerability in RSA public
+   key verification where checking a large, incorrect RSA key with...
+[1m   CVE-2023-6237[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/66777/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 66777 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in cryptography version 41.0.7[0m
+[1m   Vulnerability ID: [0m66704
+[1m   Affected spec: [0m>=38.0.0,<42.0.4
+[1m   ADVISORY: [0mcryptography is a package designed to expose
+   cryptographic primitives and recipes to Python developers. Starting in...
+[1m   CVE-2024-26130[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/66704/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 66704 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in black version 23.12.1[0m
+[1m   Vulnerability ID: [0m66742
+[1m   Affected spec: [0m<24.3.0
+[1m   ADVISORY: [0mBlack before 24.3.0 have a security vulnerability where
+   specific code formatting patterns could lead to arbitrary code...
+[1m   CVE-2024-21503[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/66742/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 66742 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in bandit version 1.7.6[0m
+[1m   Vulnerability ID: [0m64484
+[1m   Affected spec: [0m<1.7.7
+[1m   ADVISORY: [0mBandit 1.7.7 identifies the str.replace method as a
+   potential risk for SQL injection because it can be misused in...
+[1m   PVE-2024-64484[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64484/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64484 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in aiohttp version 3.9.1[0m
+[1m   Vulnerability ID: [0m64642
+[1m   Affected spec: [0m>1.0.5,<3.9.2
+[1m   ADVISORY: [0mThe vulnerability lies in the improper configuration of
+   static resource resolution when aiohttp is used as a web server. It...
+[1m   CVE-2024-23334[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64642/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64642 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in pillow version 10.1.0[0m
+[1m   Vulnerability ID: [0m67136
+[1m   Affected spec: [0m<10.3.0
+[1m   ADVISORY: [0mPillow 10.3.0 introduces a security update addressing
+   CVE-2024-28219 by replacing certain functions with strncpy to prevent...
+[1m   CVE-2024-28219[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/67136/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 67136 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in pillow version 10.1.0[0m
+[1m   Vulnerability ID: [0m64437
+[1m   Affected spec: [0m<10.2.0
+[1m   ADVISORY: [0mPillow is potentially vulnerable to DoS attacks through
+   PIL.ImageFont.ImageFont.getmask(). A decompression bomb check has also...
+[1m   PVE-2024-64437[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64437/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64437 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in pillow version 10.1.0[0m
+[1m   Vulnerability ID: [0m64436
+[1m   Affected spec: [0m<10.2.0
+[1m   ADVISORY: [0mPillow is affected by an arbitrary code execution
+   vulnerability. If an attacker has control over the keys passed to the...
+[1m   CVE-2023-50447[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64436/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64436 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in jinja2 version 3.1.2[0m
+[1m   Vulnerability ID: [0m64227
+[1m   Affected spec: [0m<3.1.3
+[1m   ADVISORY: [0mJinja2 before 3.1.3 is affected by a Cross-Site
+   Scripting vulnerability. Special placeholders in the template allow...
+[1m   CVE-2024-22195[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64227/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64227 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in gitpython version 3.1.40[0m
+[1m   Vulnerability ID: [0m63687
+[1m   Affected spec: [0m<3.1.41
+[1m   ADVISORY: [0mGitPython 3.1.41 fixes a vulnerability (CVE-2024-22190)
+   involving an untrusted search path issue on Windows, which could allow...
+[1m   CVE-2024-22190[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/63687/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 63687 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in django version 4.2.9[0m
+[1m   Vulnerability ID: [0m65771
+[1m   Affected spec: [0m>=4.0a1,<4.2.11
+[1m   ADVISORY: [0mAffected versions of Django are vulnerable to potential
+   regular expression denial-of-service (REDoS)....
+[1m   CVE-2024-27351[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/65771/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 65771 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
+[31m-> Vulnerability found in django version 4.2.9[0m
+[1m   Vulnerability ID: [0m64976
+[1m   Affected spec: [0m>=4.0a1,<4.2.10
+[1m   ADVISORY: [0mAffected versions of Django are vulnerable to potential
+   denial-of-service in intcomma template filter when used with very long...
+[1m   CVE-2024-24680[0m
+[1m   For more information about this vulnerability, visit
+   [0mhttps://data.safetycli.com/v/64976/97c[0m
+   To ignore this vulnerability, use PyUp vulnerability id 64976 in safety’s
+   ignore command-line argument or add the ignore to your safety policy file.
+
+
++==============================================================================+
+   [32m[1mREMEDIATIONS[0m
+
+  18 vulnerabilities were reported in 11 packages. For detailed remediation & 
+  fix recommendations, upgrade to a commercial license. 
+
++==============================================================================+
+
+ Scan was completed. 18 vulnerabilities were reported. 
+
++==============================================================================+
+
+[31m[22m  Safety is using PyUp's free open-source vulnerability database. This
+data is 30 days old and limited. [0m
+[31m  For real-time enhanced vulnerability data, fix recommendations, severity
+reporting, cybersecurity support, team and project policy management and more
+sign up at https://pyup.io or email sales@pyup.io[0m
+
++==============================================================================+[0m
+Security checks completed.
