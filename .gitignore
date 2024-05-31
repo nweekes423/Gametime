@@ -2,3 +2,4 @@
 venv/
 ssl/
 app/nba_notifier/ssl/
+ssl.env
