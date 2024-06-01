@@ -35,13 +35,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'twilio': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
     },
 }
+
+
 
 # Use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
@@ -49,12 +46,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 SSL_CERTIFICATE = os.environ.get('SSL_CERTIFICATE')
 SSL_PRIVATE_KEY = os.environ.get('SSL_PRIVATE_KEY')
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "default-sid")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
-print("TWILIO_ACCOUNT_SID:", TWILIO_ACCOUNT_SID)
-print("TWILIO_AUTH_TOKEN:", TWILIO_AUTH_TOKEN)
-print("TWILIO_PHONE_NUMBER:", TWILIO_PHONE_NUMBER)
+# Remove or comment out Twilio settings
+# TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "default-sid")
+# TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
+# TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
+# print("TWILIO_ACCOUNT_SID:", TWILIO_ACCOUNT_SID)
+# print("TWILIO_AUTH_TOKEN:", TWILIO_AUTH_TOKEN)
+# print("TWILIO_PHONE_NUMBER:", TWILIO_PHONE_NUMBER)
 
 CELERY_RESULT_BACKEND = (
     "redis://localhost:6379/0"
@@ -80,7 +78,7 @@ DEBUG = False  # Set to False for deployment
 
 ALLOWED_HOSTS = ['*']
 
-SECURE_SSL_REDIRECT = True  # Enable SSL redirection
+SECURE_SSL_REDIRECT = False  # Enable SSL redirection
 SECURE_HSTS_SECONDS = 31536000  # Enable HSTS with a one-year duration
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
 SECURE_HSTS_PRELOAD = True  # Allow the site to be preloaded by browsers
@@ -103,7 +101,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
+    #"django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -170,3 +168,7 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost',
+    'http://localhost',
+]
