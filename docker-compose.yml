@@ -8,9 +8,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /Users/will/Gametime/app/nba_notifier/ssl:/etc/nginx/ssl  # Mount SSL files into Nginx container
-   # env_file:
-     # - ssl.env
+      - /Users/will/Gametime/app/nba_notifier/ssl:/etc/nginx/ssl  # Mount SSL files into Django container (if needed)
+    networks:
+      - gametime_network
 
   nginx:
     build:
@@ -18,8 +18,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-      - "8443:8443"
+      - "443:443"
     volumes:
       - /Users/will/Gametime/nginx.conf:/etc/nginx/nginx.conf:ro  # Mount Nginx configuration file
       - /Users/will/Gametime/app/nba_notifier/ssl:/etc/nginx/ssl  # Mount SSL files into Nginx container
     command: ["/usr/sbin/nginx", "-g", "daemon off;"]
+    networks:
+      - gametime_network
+
+networks:
+  gametime_network:
+    driver: bridge
+
