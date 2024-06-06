@@ -15,9 +15,13 @@ from pathlib import Path
 from celery.schedules import crontab
 from dotenv import load_dotenv
 
+# Before: BASE_DIR = Path(__file__).resolve().parent
+# After: Updated BASE_DIR to point to the correct parent directory
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load .env file from the base directory
+# Before: load_dotenv()
+# After: Specified dotenv_path to load .env from BASE_DIR
 load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 LOGGING = {
@@ -35,37 +39,46 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'twilio': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 
-
-
 # Use environment variables
+# Before: SECRET_KEY was set as a hardcoded string
+# After: Updated SECRET_KEY to use environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 
 SSL_CERTIFICATE = os.environ.get('SSL_CERTIFICATE')
 SSL_PRIVATE_KEY = os.environ.get('SSL_PRIVATE_KEY')
 
-# Remove or comment out Twilio settings
-# TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "default-sid")
-# TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
-# TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
-# print("TWILIO_ACCOUNT_SID:", TWILIO_ACCOUNT_SID)
-# print("TWILIO_AUTH_TOKEN:", TWILIO_AUTH_TOKEN)
-# print("TWILIO_PHONE_NUMBER:", TWILIO_PHONE_NUMBER)
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "default-sid")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "default-token")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER", "+18888354844")
+print("TWILIO_ACCOUNT_SID:", TWILIO_ACCOUNT_SID)
+print("TWILIO_AUTH_TOKEN:", TWILIO_AUTH_TOKEN)
+print("TWILIO_PHONE_NUMBER:", TWILIO_PHONE_NUMBER)
 
+# Before: CELERY_RESULT_BACKEND was set
+# After: Added comments for clarity, no change in the value
 CELERY_RESULT_BACKEND = (
-    "redis://localhost:6379/0"
+    "redis://localhost:6379/0"  # Use the same Redis instance as your broker
 )
 
+# Checks scores every 5 minutes, adjust as needed. See if can check at cert
 CELERY_BEAT_SCHEDULE = {
     "start-daily-game-checks": {
         "task": "game_monitor.tasks.start_game_checks",
+        # Runs daily at 12:30 AM UTC, which is 4:30 PM PST
         "schedule": crontab(hour=0, minute=30),
         "args": (),
     },
     "frequent-game-score-checks": {
         "task": "game_monitor.tasks.frequent_game_score_checks",
+        # Runs every 5 minutes
         "schedule": crontab(minute="*/5"),
         "args": (),
     },
@@ -74,17 +87,22 @@ CELERY_BEAT_SCHEDULE = {
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 
-DEBUG = False  # Set to False for deployment
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-SECURE_SSL_REDIRECT = False  # Enable SSL redirection
-SECURE_HSTS_SECONDS = 31536000  # Enable HSTS with a one-year duration
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
-SECURE_HSTS_PRELOAD = True  # Allow the site to be preloaded by browsers
+# SSL settings
+# Before: SECURE_SSL_REDIRECT was set to False
+# After: Added comment to explain the setting
+SECURE_SSL_REDIRECT = False  # Disable SSL redirection
 
-SESSION_COOKIE_SECURE = True  # Ensure session cookies are only sent over HTTPS
-CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are only sent over HTTPS
+# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -95,13 +113,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "game_monitor.apps.GameMonitorConfig",
+    "game_monitor.apps.GameMonitorConfig",  # Include your app using AppConfig
     "django_celery_beat",
     "nba_notifier",
 ]
 
 MIDDLEWARE = [
-    #"django.middleware.security.SecurityMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -123,7 +141,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "django.template.context_processors.csrf",
+                # Before: CSRF context processor was missing
+                # After: Added CSRF context processor
+                "django.template.context_processors.csrf",  # Added for CSRF token
             ],
         },
     },
@@ -131,12 +151,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "nba_notifier.wsgi.application"
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# Password validation
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -153,6 +179,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Internationalization
+# https://docs.djangoproject.com/en/5.0/topics/i18n/
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -161,14 +190,14 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379/0"  # Adjust as per your Redis config
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://localhost',
-    'http://localhost',
-]

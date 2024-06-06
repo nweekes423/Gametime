@@ -1,4 +1,5 @@
 .env
 venv/
-ssl/localhost.crt
-ssl/localhost.key
+ssl/
+app/nba_notifier/ssl/
+ssl.env

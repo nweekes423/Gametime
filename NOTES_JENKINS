@@ -1,0 +1,10 @@
+Install Github Integration Plugin 
+
+Install Ngrok 
+Enter Webhook ngrok url in Github webhook settings 
+enter https github url and password in crednetials section in jenkins
+
+
+Install Docker Plugin in Jenkins and follow instructions to install and test docker cloud connection
+here:
+https://plugins.jenkins.io/docker-plugin/

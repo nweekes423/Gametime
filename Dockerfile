@@ -1,7 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10.0
 
-
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -12,17 +11,17 @@ WORKDIR /Gametime
 # Copy the application files into the container at /Gametime
 COPY . /Gametime
 
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy SSL certificates for Nginx
 RUN mkdir -p /usr/local/etc/ssl/certs/ /usr/local/etc/ssl/private/
 COPY ./ssl/self-signed.crt /usr/local/etc/ssl/certs/self-signed.crt
 COPY ./ssl/self-signed.key /usr/local/etc/ssl/private/self-signed.key
 
-# Install any needed packages specified in requirements.txt
-
-
-RUN apt-get update && apt-get install -y nginx
-
-
+# Install Python packages
 RUN pip install -r app/nba_notifier/requirements.txt
 
 # Copy Nginx configuration file
@@ -32,5 +31,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8000
 
 # Run the application with SSL using Gunicorn
-#CMD ["gunicorn", "--chdir", "app", "--bind", "0.0.0.0:8000", "nba_notifier.wsgi:application"]
 CMD ["gunicorn", "--chdir", "app", "--bind", "0.0.0.0:8000", "--certfile", "/usr/local/etc/ssl/certs/self-signed.crt", "--keyfile", "/usr/local/etc/ssl/private/self-signed.key", "nba_notifier.wsgi:application"]
+

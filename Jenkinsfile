@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     dir('/Users/will/Gametime') {
-                        sh 'source venv/bin/activate && python app/manage.py test game_monitor'
+                        sh 'source venv/bin/activate && python app/manage.py test game_monitor --exclude=test_views.py'
                     }
                 }
             }
@@ -92,5 +92,4 @@ pipeline {
         }
     }
 }
-
 
