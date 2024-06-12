@@ -38,6 +38,21 @@ LOGGING = {
     },
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# Cache time-to-live (in seconds)
+CACHE_TTL = 60 * 15
+
+
+
 
 
 # Use environment variables
@@ -97,6 +112,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "game_monitor.apps.GameMonitorConfig",
     "django_celery_beat",
+    "django_prometheus",
     "nba_notifier",
 ]
 
@@ -105,6 +121,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
