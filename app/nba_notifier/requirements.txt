@@ -25,6 +25,7 @@ django-celery-beat==2.5.0
 django-extensions==3.2.3
 django-phonenumber-field==7.3.0
 django-phonenumbers==1.0.1
+django_prometheus
 django-sslserver==0.22
 django-timezone-field==6.1.0
 frozenlist==1.4.1

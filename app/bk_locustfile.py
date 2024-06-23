@@ -1,11 +1,5 @@
-from locust import HttpUser, between, task, events
+from locust import HttpUser, between, task
 from bs4 import BeautifulSoup
-from prometheus_client import start_http_server, Gauge, Counter
-import time
-
-# Prometheus metrics
-REQUEST_LATENCY = Gauge('locust_request_latency_seconds', 'Request latency in seconds', ['method', 'endpoint'])
-REQUEST_COUNT = Counter('locust_request_count', 'Request count', ['method', 'endpoint', 'status'])
 
 class WebUser(HttpUser):
     wait_time = between(1, 5)
@@ -17,6 +11,7 @@ class WebUser(HttpUser):
 
     def fetch_csrf_token(self):
         """Fetch CSRF token from the form page."""
+        # LOOK: Fetch CSRF token by making a GET request to the form page
         response = self.client.get("/game-monitor/phone-form/")
         if response.status_code == 200:
             self.csrf_token = self.extract_csrf_token(response.text)
@@ -25,6 +20,7 @@ class WebUser(HttpUser):
 
     def extract_csrf_token(self, html_content):
         """Extract CSRF token from HTML."""
+        # LOOK: Extract CSRF token from HTML content using BeautifulSoup
         soup = BeautifulSoup(html_content, "html.parser")
         token_tag = soup.find("input", {"name": "csrfmiddlewaretoken"})
         if token_tag:
@@ -34,11 +30,7 @@ class WebUser(HttpUser):
     @task(1)
     def view_mock_api(self):
         """Simulate users viewing the mock API endpoint."""
-        start_time = time.time()
         response = self.client.get("/game-monitor/mock-api/")
-        latency = time.time() - start_time
-        REQUEST_LATENCY.labels('GET', '/game-monitor/mock-api/').set(latency)
-        REQUEST_COUNT.labels('GET', '/game-monitor/mock-api/', response.status_code).inc()
         print(f"GET /game-monitor/mock-api/ status code: {response.status_code}")
 
     @task(2)
@@ -48,7 +40,7 @@ class WebUser(HttpUser):
             self.fetch_csrf_token()
 
         phone_number = "+12125552368"  # Replace with your test data
-        start_time = time.time()
+        # LOOK: Make a POST request to submit the phone form with CSRF token
         response = self.client.post(
             "/game-monitor/phone-form/",
             {
@@ -57,31 +49,22 @@ class WebUser(HttpUser):
             },
             headers={"Referer": "http://localhost:8000/game-monitor/phone-form/"}
         )
-        latency = time.time() - start_time
-        REQUEST_LATENCY.labels('POST', '/game-monitor/phone-form/').set(latency)
-        REQUEST_COUNT.labels('POST', '/game-monitor/phone-form/', response.status_code).inc()
+
         print(f"POST /game-monitor/phone-form/ status code: {response.status_code}")
         if response.status_code == 200:
             print(f"Response text: {response.text}")
 
+        # LOOK: Refresh CSRF token after form submission to prevent stale token usage
         if response.status_code == 200:
             self.fetch_csrf_token()
 
     @task(1)
     def view_success_page(self):
         """Simulate users viewing the success page."""
-        start_time = time.time()
         response = self.client.get("/game-monitor/success/")
-        latency = time.time() - start_time
-        REQUEST_LATENCY.labels('GET', '/game-monitor/success/').set(latency)
-        REQUEST_COUNT.labels('GET', '/game-monitor/success/', response.status_code).inc()
         print(f"GET /game-monitor/success/ status code: {response.status_code}")
 
+        # LOOK: Fetch a new CSRF token after viewing the success page to ensure it is up-to-date
         if response.status_code == 200:
             self.fetch_csrf_token()
-
-@events.test_start.add_listener
-def on_test_start(environment, **kwargs):
-    # Start up the server to expose the metrics.
-    start_http_server(8000)
 
