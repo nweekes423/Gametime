@@ -1,21 +1,40 @@
 import json
 import os
 import re
-
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from nba_api.live.nba.endpoints import scoreboard
-
 from game_monitor.forms import PhoneForm
 from .models import UserPhone
 from .utils import send_text_message
-
-
+from django.core.cache import cache
+import time
 # In game_monitor/views.py
-
 from django.shortcuts import render
+
+def test_cache_view(request):
+    start_time = time.time()
+    data = cache.get('test_data')
+    if not data:
+        # Simulate a time-consuming process
+        data = {'message': 'This is a test data'}
+        time.sleep(2)  # Simulate delay
+        cache.set('test_data', data, timeout=60 * 15)
+        fetch_source = 'Generated'
+    else:
+        fetch_source = 'Cache'
+    
+    end_time = time.time()
+    response = {
+        'data': data,
+        'fetch_source': fetch_source,
+        'elapsed_time': end_time - start_time,
+    }
+    return JsonResponse(response)
+
+
 
 def games_view(request):
     try:

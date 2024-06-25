@@ -51,8 +51,10 @@ dill==0.3.7
 distlib==0.3.8
 Django==4.2.9
 django-celery-beat==2.5.0
+django-cors-headers
 django-extensions==3.2.3
 django-phonenumber-field==7.3.0
+django_prometheus
 django-sslserver==0.22
 django-timezone-field==6.1.0
 draft-kings==3.1.0

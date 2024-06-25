@@ -19,25 +19,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load .env file from the base directory
 load_dotenv(dotenv_path=BASE_DIR / '.env')
-
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'propagate': True,
         },
     },
 }
-
+'''
 
 
 # Use environment variables
@@ -86,10 +86,19 @@ SECURE_HSTS_PRELOAD = True  # Allow the site to be preloaded by browsers
 SESSION_COOKIE_SECURE = True  # Ensure session cookies are only sent over HTTPS
 CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are only sent over HTTPS
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',  # Replace with your frontend URL
+    'http://127.0.0.1:8000',   # Replace with your frontend URL
+    # Add other origins as needed
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django_extensions",
+    "django_prometheus",
+    #'debug_toolbar',
     'sslserver',
+    'corsheaders',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -101,14 +110,26 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    #"django.middleware.security.SecurityMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
+    #"django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",  # Replace with your frontend origin
+    "http://127.0.0.1:8000",  # Replace with your frontend origin
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "nba_notifier.urls"
 
@@ -169,6 +190,12 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://localhost,',
     'https://localhost',
-    'http://localhost',
+    'https://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://127.0.0.1:8000',
+    'http://0.0.0.0:8089',
 ]
+

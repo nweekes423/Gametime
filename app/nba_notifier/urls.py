@@ -11,7 +11,7 @@ urlpatterns = [
     path('games/', games_view, name='games'),
     path("", root_view, name="root"),  # Add the root view URL pattern
     path("game-monitor/", include("game_monitor.urls")),
-   #path('metrics/', prometheus_metrics, name='prometheus-metrics'),
+    path('', include('django_prometheus.urls')),  # Add Prometheus metrics URL
     path('send-sms/', send_sms),
 
     # You can add more apps' URLs here

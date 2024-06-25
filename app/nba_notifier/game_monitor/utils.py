@@ -1,36 +1,52 @@
-from django.core.mail import send_mail
-from django.conf import settings
-from datetime import datetime
-import pytz
-import re
+import json
+from nba_api.live.nba.endpoints import scoreboard
+from prometheus_client import Gauge
 
-def send_email(to_email, subject, body):
-    send_mail(
-        subject,
-        body,
-        settings.DEFAULT_FROM_EMAIL,
-        [to_email],
-        fail_silently=False,
-    )
+QUEUE_SIZE_GAUGE = Gauge('myapp_queue_size', 'Size of the Queue')
 
-def send_email(to_number, body):
-    # Convert phone number to email address format
-    to_email = f"{to_number}@{settings.LOCAL_SMTP_DOMAIN}"
-    
-    # Call the send_email function
-    send_email(to_email, "SMS Notification", body)
 
-def is_time_to_check_scores(current_time=None):
-    if current_time is None:
-        current_time = datetime.now(pytz.timezone("America/Los_Angeles"))
+def fetch_and_update_scoreboard():
+    try:
+        games = scoreboard.ScoreBoard()
+        data = games.get_dict()
 
-    start_time = current_time.replace(hour=18, minute=0, second=0, microsecond=0)
-    end_time = current_time.replace(hour=20, minute=0, second=0, microsecond=0)
+        close_games = [game for game in data["scoreboard"]["games"] if is_close_game(game)]
+        QUEUE_SIZE_GAUGE.set(len(close_games))
 
-    return start_time <= current_time <= end_time
+        for user_phone in UserPhone.objects.all():
+            send_text_message(user_phone.phone_number, "Close game detected!")
+
+        with open("scoreboard.json", "w") as file:
+            json.dump(data, file)
+
+        print("Scoreboard updated successfully.")
+
+    except Exception as e:
+        print(f"Error updating scoreboard: {e}")
+
+
+def is_close_game(game):
+    try:
+        home_score = game["homeTeam"]["score"]
+        away_score = game["awayTeam"]["score"]
+        point_difference = abs(home_score - away_score)
+
+        game_clock = game["gameClock"]
+        minutes, seconds = parse_duration(game_clock)
+        time_left = minutes + seconds / 60
+
+        if point_difference <= 10 and time_left <= 8 and game["period"] >= 4:
+            print(f"Close game detected: {game['homeTeam']['teamName']} vs {game['awayTeam']['teamName']}")
+            print(f"Score: {home_score} - {away_score}, Time Left: {minutes}m {seconds}s")
+            return True
+
+        return False
+
+    except KeyError:
+        return False
+
 
 def parse_duration(duration_str):
-    """Parse ISO 8601 duration string into minutes and seconds."""
     match = re.match(r"PT(\d+)M(\d+\.?\d*)S", duration_str)
     if match:
         minutes = int(match.group(1))
@@ -38,4 +54,3 @@ def parse_duration(duration_str):
         return minutes, seconds
     else:
         return 0, 0
-

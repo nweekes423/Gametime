@@ -1,3 +1,7 @@
+#TRY THIS
+Wait between game monitor phone form number requests
+ wait_time = between(0.5, 10)
+
 #NGINX SSL
 https://arjav-dave.medium.com/self-signed-ssl-nginx-on-mac-part-3-ed484e7b6911
 
