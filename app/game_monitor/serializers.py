@@ -1,3 +1,4 @@
+# ruff: noqa: TRY003
 from typing import ClassVar
 
 from rest_framework import serializers
