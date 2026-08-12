@@ -12,4 +12,3 @@ errorlog = "app/nba_notifier/logs/gunicorn_error.log"
 wsgi_app = "app.nba_notifier.wsgi"
 timeout = 60  # Increase the timeout to 60 seconds
 graceful_timeout = 60  # Increase the graceful timeout to 60 seconds
-

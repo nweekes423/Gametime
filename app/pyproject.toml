@@ -1,0 +1,30 @@
+[tool.ruff.lint.per-file-ignores]
+"game_monitor/migrations/*.py" = ["RUF012"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "nba_notifier.settings"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "B",
+    "UP",
+    "SIM",
+    "TRY",
+    "RUF"
+]
+
+ignore = [
+    "E501"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

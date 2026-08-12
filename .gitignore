@@ -1,5 +1,39 @@
-.env
+# Python
+__pycache__/
+*.py[cod]
+
+# Local environments and secrets
 venv/
-ssl/
-app/nba_notifier/ssl/
+venv311/
+.venv/
+.env
+.env.*
+!.env.example
 ssl.env
+ssl/
+**/ssl/
+token
+**/token
+
+# Local data and runtime state
+*.sqlite3
+celerybeat-schedule*
+*.log
+logs/
+
+# Test, lint, and browser caches
+.coverage
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+
+# Django generated files
+staticfiles/
+**/staticfiles/
+app/wnba_scoreboard.json
+app/scoreboard.json
+.aider*

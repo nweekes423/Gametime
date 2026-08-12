@@ -3,8 +3,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 
-
 # Create your models here.
+
 
 class Game(models.Model):
     title = models.CharField(max_length=255)
@@ -15,12 +15,12 @@ class Game(models.Model):
     home_team_score = models.IntegerField(null=True, blank=True)
     away_team_score = models.IntegerField(null=True, blank=True)
     game_clock = models.CharField(max_length=10)
-    #period = models.IntegerField()
+    # period = models.IntegerField()
     period = models.IntegerField(null=True, blank=True)
-
 
     def __str__(self):
         return self.title
+
 
 class UserPhone(models.Model):
     phone_regex = RegexValidator(
@@ -35,9 +35,9 @@ class UserPhone(models.Model):
         try:
             # Validate the phone number
             self.full_clean()
-        except ValidationError as e:
+        except ValidationError:
             # Here, you can customize the error message or use e.message_dict
             custom_error_message = "Invalid phone number. Please enter a number in the format: '+999999999'. Up to 15 digits allowed."
-            raise ValidationError(custom_error_message)
+            raise ValidationError(custom_error_message) from None
 
-        super(UserPhone, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)

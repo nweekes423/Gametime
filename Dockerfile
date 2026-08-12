@@ -17,19 +17,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && echo "deb [signed-by=/usr/share/keyrings/debian-archive-bullseye-keyring.gpg] http://deb.debian.org/debian bullseye main" > /etc/apt/sources.list.d/debian-bullseye.list \
     && apt-get update && apt-get install -y --no-install-recommends \
     nginx \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the application files into the container at /Gametime
 COPY . /Gametime
 
-# Copy SSL certificates for Nginx
-RUN mkdir -p /usr/local/etc/ssl/certs/ /usr/local/etc/ssl/private/
-COPY ./ssl/self-signed.crt /usr/local/etc/ssl/certs/self-signed.crt
-COPY ./ssl/self-signed.key /usr/local/etc/ssl/private/self-signed.key
+# Generate a development certificate at image-build time. Production deployments
+# should terminate TLS with their managed certificate provider.
+RUN mkdir -p /usr/local/etc/ssl/certs/ /usr/local/etc/ssl/private/ \
+    && openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
+       -keyout /usr/local/etc/ssl/private/self-signed.key \
+       -out /usr/local/etc/ssl/certs/self-signed.crt \
+       -subj "/CN=localhost"
 
 # Install Python packages
 RUN pip install --upgrade pip
-RUN pip install -r app/nba_notifier/requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -39,4 +43,3 @@ EXPOSE 8000
 
 # Run the application with SSL using Gunicorn
 CMD ["gunicorn", "--chdir", "app", "--bind", "0.0.0.0:8000", "--certfile", "/usr/local/etc/ssl/certs/self-signed.crt", "--keyfile", "/usr/local/etc/ssl/private/self-signed.key", "nba_notifier.wsgi:application"]
-

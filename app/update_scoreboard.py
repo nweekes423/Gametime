@@ -1,6 +1,5 @@
 import json
 
-import requests
 from nba_api.live.nba.endpoints import scoreboard
 
 

@@ -1,5 +1,4 @@
 # nba_notifier/__init__.py
-from __future__ import absolute_import, unicode_literals
 from .celeryy import app as celery_app
 
 # This will make sure the app is always imported when
