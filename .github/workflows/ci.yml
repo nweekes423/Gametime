@@ -24,7 +24,7 @@ jobs:
         run: python manage.py check
       - name: Run tests
         working-directory: app
-        run: python -m pytest game_monitor/tests -q
+        run: python manage.py test game_monitor.tests
       - name: Lint
         working-directory: app
         run: ruff check --no-cache .
