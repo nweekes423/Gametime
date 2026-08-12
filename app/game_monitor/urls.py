@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 from . import views  # Import views from this app
 from .api_views import GameViewSet, UserPhoneViewSet
-from .views import test_cache_view
+from .views import health_check, test_cache_view
 
 # Create a router and register our viewsets
 router = DefaultRouter()
@@ -16,6 +16,9 @@ router.register(r'games', GameViewSet, basename='game')
 router.register(r'phones', UserPhoneViewSet, basename='userphone')
 
 urlpatterns = [
+    # Health check endpoint
+    path('health/', health_check, name='health_check'),
+    
     # API Documentation URLs (root level for easy access)
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

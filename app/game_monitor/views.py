@@ -6,6 +6,7 @@ import time
 
 from django.contrib import messages
 from django.core.cache import cache
+from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
@@ -331,3 +332,32 @@ def mock_nba_api(request):
         )
 
     return JsonResponse({"close_games": close_games_info})
+
+
+def health_check(request):
+    """Health check endpoint for Docker health checks and monitoring."""
+    # Check database connection
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        db_status = "healthy"
+    except Exception as e:
+        db_status = f"unhealthy: {e!s}"
+    
+    # Check cache connection
+    try:
+        cache.set("health_check", "ok", timeout=10)
+        cache.get("health_check")
+        cache_status = "healthy"
+    except Exception as e:
+        cache_status = f"unhealthy: {e!s}"
+    
+    health_data = {
+        "status": "healthy" if db_status == "healthy" and cache_status == "healthy" else "unhealthy",
+        "database": db_status,
+        "cache": cache_status,
+        "timestamp": time.time(),
+    }
+    
+    status_code = 200 if health_data["status"] == "healthy" else 503
+    return JsonResponse(health_data, status=status_code)
