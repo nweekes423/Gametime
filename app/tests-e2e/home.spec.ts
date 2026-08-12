@@ -20,7 +20,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('phone form page loads with correct elements', async ({ page }) => {
-    await page.goto('/game-monitor/phone-form/');
+    await page.goto('/phone-form/');
     
     // Check for form elements
     await expect(page.locator('form')).toBeVisible();
@@ -29,7 +29,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('submit valid phone number', async ({ page }) => {
-    await page.goto('/game-monitor/phone-form/');
+    await page.goto('/phone-form/');
     
     // Fill in valid phone number
     await page.fill('input[name="phone_number"]', '+15555555555');
@@ -43,7 +43,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('submit invalid phone number shows error', async ({ page }) => {
-    await page.goto('/game-monitor/phone-form/');
+    await page.goto('/phone-form/');
     
     // Fill in invalid phone number
     await page.fill('input[name="phone_number"]', 'invalid');
@@ -57,7 +57,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('success page displays correctly', async ({ page }) => {
-    await page.goto('/game-monitor/success/');
+    await page.goto('/success/');
     
     await expect(page.locator('body')).toContainText('Success');
   });
@@ -70,7 +70,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('API endpoint returns close games', async ({ request }) => {
-    const response = await request.get('/game-monitor/mock-api/');
+    const response = await request.get('/mock-api/');
     expect(response.ok()).toBeTruthy();
     
     const data = await response.json();
@@ -79,7 +79,7 @@ test.describe('Gametime E2E Tests', () => {
   });
 
   test('cache API endpoint works', async ({ request }) => {
-    const response = await request.get('/game-monitor/test-cache/');
+    const response = await request.get('/test-cache/');
     expect(response.ok()).toBeTruthy();
     
     const data = await response.json();
@@ -91,5 +91,42 @@ test.describe('Gametime E2E Tests', () => {
   test('handle non-existent pages gracefully', async ({ page }) => {
     const response = await page.goto('/non-existent-page/');
     expect(response?.status()).toBe(404);
+  });
+
+  test('API documentation page loads', async ({ page }) => {
+    await page.goto('/game-monitor/docs/');
+    
+    // Check that Swagger UI loads
+    await expect(page.locator('#swagger-ui')).toBeVisible();
+  });
+
+  test('API schema endpoint returns valid OpenAPI spec', async ({ request }) => {
+    const response = await request.get('/game-monitor/schema/');
+    expect(response.ok()).toBeTruthy();
+    
+    const data = await response.json();
+    expect(data).toHaveProperty('openapi');
+    expect(data).toHaveProperty('info');
+    expect(data).toHaveProperty('paths');
+  });
+
+  test('Games API endpoint returns paginated results', async ({ request }) => {
+    const response = await request.get('/game-monitor/api/games/');
+    expect(response.ok()).toBeTruthy();
+    
+    const data = await response.json();
+    expect(data).toHaveProperty('count');
+    expect(data).toHaveProperty('results');
+    expect(Array.isArray(data.results)).toBeTruthy();
+  });
+
+  test('Phones API endpoint returns registered numbers', async ({ request }) => {
+    const response = await request.get('/game-monitor/api/phones/');
+    expect(response.ok()).toBeTruthy();
+    
+    const data = await response.json();
+    expect(data).toHaveProperty('count');
+    expect(data).toHaveProperty('results');
+    expect(Array.isArray(data.results)).toBeTruthy();
   });
 });

@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "drf_spectacular",
     "game_monitor",
     "django_celery_beat",
 ]
@@ -74,4 +76,20 @@ CELERY_BEAT_SCHEDULE = {
         "task": "game_monitor.tasks.frequent_game_score_checks",
         "schedule": timedelta(minutes=1),
     },
+}
+
+# REST Framework Settings
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+}
+
+# Spectacular Settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Gametime API",
+    "DESCRIPTION": "NBA and WNBA game monitoring and notification API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
 }
