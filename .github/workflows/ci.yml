@@ -41,5 +41,5 @@ jobs:
       - name: Security scan
         working-directory: app
         run: |
-          safety scan || true
+          safety check --json || true
           bandit -r . || true

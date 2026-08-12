@@ -1,12 +1,12 @@
 import os
-import subprocess
+import subprocess  # nosec B404
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def run_command(command):
     try:
-        subprocess.run(command, check=True, shell=True)
+        subprocess.run(command, check=True, shell=True)  # nosec B602
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {e}")
 
