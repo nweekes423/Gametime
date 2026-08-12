@@ -18,13 +18,28 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest
+          pip install ruff pytest coverage pytest-cov factory-boy safety bandit
       - name: Verify Django configuration
         working-directory: app
         run: python manage.py check
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: app
-        run: python manage.py test game_monitor.tests
+        run: |
+          coverage run --source='.' manage.py test game_monitor.tests
+          coverage report
+          coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./app/coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
       - name: Lint
         working-directory: app
         run: ruff check --no-cache .
+      - name: Security scan
+        working-directory: app
+        run: |
+          safety check --json || true
+          bandit -r . || true

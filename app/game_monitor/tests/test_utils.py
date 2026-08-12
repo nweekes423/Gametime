@@ -28,8 +28,8 @@ class UtilsTests(TestCase):
     def test_send_text_message_fake_mode(self, mock_client):
         with self.settings(
             TWILIO_FAKE_MODE=True,
-            TWILIO_ACCOUNT_SID="test-sid",
-            TWILIO_AUTH_TOKEN="test-token",
+            TWILIO_ACCOUNT_SID="test-sid",  # nosec B106
+            TWILIO_AUTH_TOKEN="test-token",  # nosec B106
             TWILIO_PHONE_NUMBER="+15555555555",
         ):
             result = send_text_message(
@@ -48,8 +48,8 @@ class UtilsTests(TestCase):
 
         with self.settings(
             TWILIO_FAKE_MODE=False,
-            TWILIO_ACCOUNT_SID="test-sid",
-            TWILIO_AUTH_TOKEN="test-token",
+            TWILIO_ACCOUNT_SID="test-sid",  # nosec B106
+            TWILIO_AUTH_TOKEN="test-token",  # nosec B106
             TWILIO_PHONE_NUMBER="+15555555555",
         ):
             result = send_text_message(

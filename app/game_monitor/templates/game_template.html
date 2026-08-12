@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Games</title>
+</head>
+<body>
+    <h1>NBA Games</h1>
+    <ul>
+        {% for game in games_info %}
+        <li>
+            {{ game.home_team }} vs {{ game.away_team }} - {{ game.score }} ({{ game.time_left }})
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

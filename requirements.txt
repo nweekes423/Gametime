@@ -7,3 +7,8 @@ twilio
 requests
 django-celery-beat
 boto3
+factory-boy
+coverage
+pytest-cov
+djangorestframework
+drf-spectacular
