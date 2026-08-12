@@ -36,3 +36,4 @@ staticfiles/
 **/staticfiles/
 app/wnba_scoreboard.json
 app/scoreboard.json
+.aider*
