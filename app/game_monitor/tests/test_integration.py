@@ -1,12 +1,13 @@
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.core.exceptions import ValidationError
+from django.test import Client, TestCase
+from django.urls import reverse
 
-from game_monitor.factories import UserPhoneFactory, GameFactory
-from game_monitor.models import UserPhone, Game
+from game_monitor.factories import GameFactory, UserPhoneFactory
+from game_monitor.models import Game, UserPhone
 
 
 class GameMonitorIntegrationTests(TestCase):
@@ -208,7 +209,7 @@ class GameMonitorIntegrationTests(TestCase):
         user_phone.full_clean()  # Should not raise
         
         # Invalid phone number
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             invalid_phone = UserPhone(phone_number="invalid")
             invalid_phone.full_clean()
 

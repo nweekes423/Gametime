@@ -1,8 +1,8 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from unittest.mock import patch
 
-from game_monitor.factories import UserPhoneFactory
+from django.test import Client, TestCase
+from django.urls import reverse
+
 from game_monitor.models import UserPhone
 
 
@@ -147,7 +147,7 @@ class SecurityTests(TestCase):
 
     def test_header_security_basic(self):
         """Test basic security headers."""
-        response = self.client.get(reverse("root"))
+        self.client.get(reverse("root"))
         
         # Check for basic security headers
         # Note: Django doesn't set all headers by default

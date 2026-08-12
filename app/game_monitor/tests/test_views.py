@@ -1,12 +1,13 @@
 import json
-from unittest.mock import patch, MagicMock, mock_open
-from django.test import TestCase, Client
-from django.urls import reverse
+from unittest.mock import mock_open, patch
+
 from django.contrib.messages import get_messages
 from django.core.cache import cache
+from django.test import Client, TestCase
+from django.urls import reverse
 
-from game_monitor.factories import UserPhoneFactory, GameFactory
-from game_monitor.models import UserPhone, Game
+from game_monitor.factories import UserPhoneFactory
+from game_monitor.models import UserPhone
 
 
 class ViewsTests(TestCase):
