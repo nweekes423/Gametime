@@ -4,7 +4,7 @@ metadata:
   name: django-service
 spec:
   selector:
-    app: django-app
+    app: my-django-app
   ports:
     - protocol: TCP
       port: 80            # Port exposed by the service

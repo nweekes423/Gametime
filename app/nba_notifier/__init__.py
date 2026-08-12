@@ -1,8 +1,8 @@
 # nba_notifier/__init__.py
-from __future__ import absolute_import, unicode_literals
-from .celeryy import app as celery_app
 import logging
 import time
+
+from .celery import app as celery_app
 
 logger = logging.getLogger(__name__)
 
@@ -21,5 +21,3 @@ __all__ = ("celery_app",)
 end_time = time.time()
 startup_duration = end_time - start_time
 logger.info(f"Server startup complete. Duration: {startup_duration:.2f} seconds.")
-
-

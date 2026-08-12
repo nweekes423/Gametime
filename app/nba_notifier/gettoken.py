@@ -11,13 +11,10 @@ def get_csrf_token(url):
     if response.status_code == 200:
         # Use BeautifulSoup to parse the HTML and extract the CSRF token value
         soup = BeautifulSoup(response.text, "html.parser")
-        csrf_token = soup.find(
-            "input", dict(
-                name="csrfmiddlewaretoken")).get("value")
+        csrf_token = soup.find("input", dict(name="csrfmiddlewaretoken")).get("value")
         return csrf_token
     else:
-        print(
-            f"Failed to fetch the form page. Status code: {response.status_code}")
+        print(f"Failed to fetch the form page. Status code: {response.status_code}")
         return None
 
 
@@ -31,9 +28,7 @@ csrf_token = get_csrf_token(form_url)
 if csrf_token:
     print(f"CSRF Token: {csrf_token}")
     # Prepare headers
-    headers = {
-        "Referer": form_url,
-        "Content-Type": "application/x-www-form-urlencoded"}
+    headers = {"Referer": form_url, "Content-Type": "application/x-www-form-urlencoded"}
     # Data payload including the CSRF token
     data = {"csrfmiddlewaretoken": csrf_token, "phone_number": "5105194907"}
     # Submit the form

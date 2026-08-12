@@ -1,35 +1,55 @@
-from datetime import datetime
-
-import pytz
-from django.conf import settings
-from twilio.rest import Client
 import re
+
+from django.conf import settings
+from twilio.base.exceptions import TwilioRestException
+from twilio.rest import Client
 
 
 def send_text_message(to_number, body):
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-    message = client.messages.create(
-        from_=settings.TWILIO_PHONE_NUMBER, body=body, to=to_number
+    """Send an SMS, or print it when Twilio fake mode is enabled."""
+
+    account_sid = getattr(settings, "TWILIO_ACCOUNT_SID", None)
+    auth_token = getattr(settings, "TWILIO_AUTH_TOKEN", None)
+    from_phone = getattr(settings, "TWILIO_PHONE_NUMBER", None)
+
+    is_fake = (
+        getattr(settings, "TWILIO_FAKE_MODE", False)
+        or not account_sid
+        or not auth_token
+        or not from_phone
+        or "default-sid" in str(account_sid)
+        or "default-token" in str(auth_token)
+        or "YOUR" in str(from_phone)
     )
-    print(message.sid)
 
+    if is_fake:
+        print(f"[FAKE SMS] To: {to_number} Body: {body}")
+        return True
 
-def is_time_to_check_scores(current_time=None):
-    if current_time is None:
-        current_time = datetime.now(pytz.timezone("America/Los_Angeles"))
+    try:
+        client = Client(account_sid, auth_token)
 
-    start_time = current_time.replace(hour=18, minute=0, second=0, microsecond=0)
-    end_time = current_time.replace(hour=20, minute=0, second=0, microsecond=0)
-
-    return start_time <= current_time <= end_time
+        message = client.messages.create(
+            from_=from_phone,
+            body=body,
+            to=to_number,
+        )
+    except TwilioRestException as exc:
+        print(f"[SMS ERROR] {exc}")
+        return False
+    else:
+        print(f"[SMS SENT] SID: {message.sid}")
+        return True
 
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string into minutes and seconds."""
+
     match = re.match(r"PT(\d+)M(\d+\.?\d*)S", duration_str)
+
     if match:
         minutes = int(match.group(1))
         seconds = float(match.group(2))
         return minutes, seconds
-    else:
-        return 0, 0
+
+    return 0, 0
