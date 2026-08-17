@@ -28,6 +28,9 @@ RUN pip install --upgrade pip && \
 # Copy application code
 COPY app/ /app/
 
+# Remove any gunicorn config files that might have user settings
+RUN find /app -name "gunicorn.conf.py" -delete || true
+
 # Create directories for static files, media, and logs
 RUN mkdir -p /app/staticfiles /app/media /app/logs
 
@@ -36,8 +39,7 @@ EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:8000/health/ || exit 1
+    CMD wget --quiet --tries=1 --spider http://localhost:8000/game-monitor/health/ || exit 1
 
-# Run Gunicorn as root to avoid user issues
-USER root
+# Run Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--threads", "2", "--timeout", "120", "--access-logfile", "/app/logs/access.log", "--error-logfile", "/app/logs/error.log", "nba_notifier.wsgi:application"]

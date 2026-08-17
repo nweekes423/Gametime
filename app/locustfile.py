@@ -43,18 +43,6 @@ class WebUser(HttpUser):
             return token_tag["value"]
         return None
 
-    @task(1)
-    def view_mock_api(self):
-        """Simulate users viewing the mock API endpoint."""
-        start_time = time.time()
-        response = self.client.get("/game-monitor/mock-api/")
-        latency = time.time() - start_time
-        REQUEST_LATENCY.labels("GET", "/game-monitor/mock-api/").set(latency)
-        REQUEST_COUNT.labels(
-            "GET", "/game-monitor/mock-api/", response.status_code
-        ).inc()
-        print(f"GET /game-monitor/mock-api/ status code: {response.status_code}")
-
     @task(2)
     def submit_phone_form(self):
         """Simulate submitting a phone number through the form."""

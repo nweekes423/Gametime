@@ -73,40 +73,6 @@ class PerformanceTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertLess(response_time, 2.0, "Games view should respond in less than 2 seconds")
 
-    def test_cache_view_response_time(self):
-        """Test cache view response time is acceptable."""
-        start_time = time.time()
-        response = self.client.get(reverse("test_cache"))
-        end_time = time.time()
-        
-        response_time = end_time - start_time
-        self.assertEqual(response.status_code, 200)
-        self.assertLess(response_time, 3.0, "Cache view should respond in less than 3 seconds")
-
-    def test_cache_view_cached_response_time(self):
-        """Test cached cache view response time is significantly faster."""
-        # First request to populate cache
-        self.client.get(reverse("test_cache"))
-        
-        # Second request should be cached
-        start_time = time.time()
-        response = self.client.get(reverse("test_cache"))
-        end_time = time.time()
-        
-        response_time = end_time - start_time
-        self.assertEqual(response.status_code, 200)
-        self.assertLess(response_time, 0.5, "Cached response should be very fast")
-
-    def test_mock_api_response_time(self):
-        """Test mock API response time is acceptable."""
-        start_time = time.time()
-        response = self.client.get("/game-monitor/mock-api/")
-        end_time = time.time()
-        
-        response_time = end_time - start_time
-        self.assertIn(response.status_code, [200, 404, 500])  # May not have file
-        self.assertLess(response_time, 1.0, "Mock API should respond in less than 1 second")
-
     def test_database_query_performance(self):
         """Test database query performance with multiple records."""
         # Create multiple records

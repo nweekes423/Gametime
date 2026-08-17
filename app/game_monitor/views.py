@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import re
 import time
 
@@ -17,30 +16,6 @@ from .models import UserPhone
 from .utils import send_text_message
 
 logger = logging.getLogger(__name__)
-
-
-def test_cache_view(request):
-    """Test Django cache performance."""
-    start_time = time.time()
-    data = cache.get("test_data")
-
-    if not data:
-        data = {"message": "This is a test data"}
-        time.sleep(2)
-        cache.set("test_data", data, timeout=60 * 15)
-        fetch_source = "Generated"
-    else:
-        fetch_source = "Cache"
-
-    end_time = time.time()
-
-    response = {
-        "data": data,
-        "fetch_source": fetch_source,
-        "elapsed_time": end_time - start_time,
-    }
-
-    return JsonResponse(response)
 
 
 def games_view(request):
@@ -288,50 +263,6 @@ def fetch_and_update_scoreboard():
 
 if __name__ == "__main__":
     fetch_and_update_scoreboard()
-
-
-def mock_nba_api(request):
-    """Return close games from the local scoreboard fixture."""
-    file_path = os.path.join(
-        os.path.dirname(__file__),
-        "scoreboard.json",
-    )
-
-    try:
-        with open(file_path, encoding="utf-8") as file:
-            data = json.load(file)
-
-        close_games = [
-            game for game in data["scoreboard"]["games"] if is_close_game(game)
-        ]
-
-        close_games_info = [
-            {
-                "home_team": game["homeTeam"]["teamName"],
-                "away_team": game["awayTeam"]["teamName"],
-                "score": (f"{game['homeTeam']['score']} - {game['awayTeam']['score']}"),
-                "time_left": game["gameClock"],
-            }
-            for game in close_games
-        ]
-
-    except FileNotFoundError:
-        return JsonResponse(
-            {"error": "File not found"},
-            status=404,
-        )
-    except json.JSONDecodeError:
-        return JsonResponse(
-            {"error": "Invalid JSON"},
-            status=500,
-        )
-    except KeyError:
-        return JsonResponse(
-            {"error": "Invalid scoreboard structure"},
-            status=500,
-        )
-
-    return JsonResponse({"close_games": close_games_info})
 
 
 def health_check(request):

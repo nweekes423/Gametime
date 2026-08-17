@@ -64,3 +64,6 @@ venv311/
 *.pid
 *.seed
 *.pid.lock
+
+# Gunicorn configs
+gunicorn.conf.py

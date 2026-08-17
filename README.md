@@ -21,6 +21,7 @@ Python 3.11, Django, Celery, Redis, SQLite, Twilio, Docker, pytest, and Ruff.
 
 ## Local setup
 
+### Quick Demo (No Docker)
 ```bash
 git clone https://github.com/nweekes423/Gametime.git
 cd Gametime
@@ -29,6 +30,16 @@ source venv311/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 python app/manage.py migrate
+./demo-simple.sh  # Automated demo script
+```
+
+### Full Docker Demo
+```bash
+./demo-recruiter.sh  # Automated Docker demo with all services
+```
+
+### Manual Setup
+```bash
 python app/manage.py runserver
 ```
 
